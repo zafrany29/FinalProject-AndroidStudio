@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">FinalProject-AndroidStudio</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="default_web_client_id">1066689304187-6vooupstvbikpgm6aju5s75go2mqlknl.apps.googleusercontent.com</string>
+    <string name="required">Required</string>
+    <string name="invalid_email">Invalid Email</string>
+
+
 </resources>
