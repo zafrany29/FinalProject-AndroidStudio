@@ -106,7 +106,11 @@ public class FragmentOne extends Fragment {
                 String email = emailTextView.getText().toString();
                 String password = passTextView.getText().toString();
 
-                mAuth.signInWithEmailAndPassword(email, password)
+                if((email == null || email.isEmpty()) || (password == null || password.isEmpty())){
+                    Toast.makeText(getActivity(), "login failed", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -124,6 +128,7 @@ public class FragmentOne extends Fragment {
                                 }
                             }
                         });
+                }
             }
         });
 
