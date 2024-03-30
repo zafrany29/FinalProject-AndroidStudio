@@ -6,7 +6,6 @@
     android:orientation="vertical"
     tools:context=".fragments.FragmentTwo">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/PageTwoTitle"
         android:layout_width="match_parent"
@@ -16,6 +15,73 @@
         android:text="הרשמה"
         android:textSize="22sp"
         android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/regTextFirstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:gravity="right"
+        android:hint="שם פרטי"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/regTextLastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:gravity="right"
+        android:hint="שם משפחה"
+        android:inputType="textPersonName" />
+
+    <Spinner
+        android:id="@+id/regGender"
+        android:layout_width="209dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:entries="@array/gender_array"
+        android:gravity="right" />
+
+    <Spinner
+        android:id="@+id/regLocation"
+        android:layout_width="209dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:entries="@array/location_array"
+        android:gravity="right" />
+
+    <Spinner
+        android:id="@+id/regUserType"
+        android:layout_width="209dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:entries="@array/user_type_array"
+        android:gravity="right" />
+
+    <Spinner
+        android:id="@+id/regProfession"
+        android:layout_width="209dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:entries="@array/profession_array"
+        android:gravity="right" />
+
+    <EditText
+        android:id="@+id/registration_years_experience"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:gravity="right"
+        android:hint="שנות ניסיון"
+        android:inputType="number"
+    />
 
     <EditText
         android:id="@+id/regTextEmailAddress"
@@ -46,6 +112,16 @@
         android:gravity="right"
         android:hint="מספר טלפון"
         android:inputType="phone" />
+
+    <EditText
+        android:id="@+id/regExtraText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:ems="10"
+        android:gravity="right"
+        android:hint="טקסט חופשי"
+        android:inputType="text" />
 
     <LinearLayout
         android:layout_width="match_parent"
