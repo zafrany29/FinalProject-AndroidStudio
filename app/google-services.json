@@ -12,7 +12,12 @@
           "package_name": "com.example.finalproject_androidstudio"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1066689304187-6vooupstvbikpgm6aju5s75go2mqlknl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAoQXVvaUIgDWLUd7jroifeh1aHHLy3DDU"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1066689304187-6vooupstvbikpgm6aju5s75go2mqlknl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

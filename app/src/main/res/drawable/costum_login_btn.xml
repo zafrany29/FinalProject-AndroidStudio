@@ -1,0 +1,17 @@
+<!-- button_custom.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Unpressed state -->
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#9b8ce1" /> <!-- Purple color -->
+        </shape>
+    </item>
+
+    <!-- Pressed state -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#705FBD" /> <!-- Darker shade of purple when pressed -->
+            <corners android:radius="8dp" /> <!-- Adjust radius for rounded corners -->
+        </shape>
+    </item>
+</selector>
