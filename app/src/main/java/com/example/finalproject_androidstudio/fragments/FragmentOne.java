@@ -1,6 +1,7 @@
 package com.example.finalproject_androidstudio.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,18 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.finalproject_androidstudio.R;
+import com.example.finalproject_androidstudio.activities.MainActivity;
+import com.example.finalproject_androidstudio.activities.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,7 +110,7 @@ public class FragmentOne extends Fragment {
                 String password = passTextView.getText().toString();
 
                 if((email == null || email.isEmpty()) || (password == null || password.isEmpty())){
-                    Toast.makeText(getActivity(), "login failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "login failed. fill all fields", Toast.LENGTH_LONG).show();
                 }
                 else{
                     mAuth.signInWithEmailAndPassword(email, password)
@@ -111,15 +119,47 @@ public class FragmentOne extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
-                                    Toast.makeText(getActivity(), "login ok", Toast.LENGTH_LONG).show();
-                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("email", email);
-                                    //Navigation.findNavController(view).navigate(R.id.action_fragmentOne_to_fragmentThree, bundle);
+                                    if (currentUser != null) {
+                                        // Get UID of the logged-in user
+                                        String uid = currentUser.getUid();
+
+                                        // Fetch user details from the database
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        DatabaseReference usersRef = database.getReference("users");
+                                        DatabaseReference userRef = usersRef.child(uid);
+
+                                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                // Assuming you have a User class that matches your database structure
+                                                User user = dataSnapshot.getValue(User.class);
+                                                String name = "";
+
+                                                MainActivity mainActivity = (MainActivity) getActivity();
+                                                mainActivity.setUser(user);
+
+                                                if (user != null) {
+                                                    name = user.fname + " " + user.lname;
+                                                    Log.d("LoginSuccess", "User's name: " + name);
+                                                    Toast.makeText(getActivity(), "login ok", Toast.LENGTH_LONG).show();
+                                                }
+
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("name", name);
+                                                Navigation.findNavController(view).navigate(R.id.action_fragmentOne_to_fragmentThree, bundle);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                Toast.makeText(getActivity(), "login failed1", Toast.LENGTH_LONG).show();                                                // Handle errors
+                                            }
+                                        });
+                                    }
                                 } else {
                                     // If sign in fails, display a message to the user.
-                                    Toast.makeText(getActivity(), "login failed", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), "login failed2", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });

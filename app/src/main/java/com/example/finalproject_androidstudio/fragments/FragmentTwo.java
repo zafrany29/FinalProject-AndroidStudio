@@ -1,5 +1,6 @@
 package com.example.finalproject_androidstudio.fragments;
 
+import com.example.finalproject_androidstudio.activities.MainActivity;
 import com.example.finalproject_androidstudio.activities.User;
 import android.os.Bundle;
 
@@ -19,7 +20,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.finalproject_androidstudio.R;
-import com.example.finalproject_androidstudio.activities.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,9 +27,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -136,7 +133,7 @@ public class FragmentTwo extends Fragment {
         });
 
         // Register
-        Button buttonOne = (Button) view.findViewById(R.id.buttonReg);
+        Button buttonOne = (Button) view.findViewById(R.id.buttonLogout);
         buttonOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,6 +187,9 @@ public class FragmentTwo extends Fragment {
                                                 user = new User(fname, lname, gender, location, userType, email, password, phone, extraText);
                                             }
 
+                                            MainActivity mainActivity = (MainActivity) getActivity();
+                                            mainActivity.setUser(user);
+
                                             // Get a reference to the database
                                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                                             DatabaseReference usersRef = database.getReference("users");
@@ -204,7 +204,7 @@ public class FragmentTwo extends Fragment {
                                                                 // If you want to pass the email to another fragment, you can do so
                                                                 Bundle bundle = new Bundle();
                                                                 bundle.putString("name", fname + " " + lname);
-                                                                //Navigation.findNavController(view).navigate(R.id.action_fragmentTwo_to_fragmentThree, bundle);
+                                                                Navigation.findNavController(view).navigate(R.id.action_fragmentTwo_to_fragmentThree, bundle);
                                                             } else {
                                                                 Toast.makeText(getActivity(), "Failed to save user data", Toast.LENGTH_SHORT).show();
                                                             }
