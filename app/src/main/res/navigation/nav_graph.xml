@@ -1,40 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/fragmentOne">
+    app:startDestination="@id/fragmentLogin">
     <fragment
-        android:id="@+id/fragmentOne"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentOne"
-        android:label="fragment_one"
-        tools:layout="@layout/fragment_one" >
+        android:id="@+id/fragmentLogin"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentLogin"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_fragmentOne_to_fragmentTwo"
-            app:destination="@id/fragmentTwo" />
+            android:id="@+id/action_fragmentLogin_to_fragmentRegister"
+            app:destination="@id/fragmentRegister" />
         <action
-            android:id="@+id/action_fragmentOne_to_fragmentThree"
-            app:destination="@id/fragmentThree" />
+            android:id="@+id/action_fragmentLogin_to_fragmentMain"
+            app:destination="@id/fragmentMain" />
     </fragment>
     <fragment
-        android:id="@+id/fragmentTwo"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentTwo"
-        android:label="fragment_two"
-        tools:layout="@layout/fragment_two" >
+        android:id="@+id/fragmentRegister"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentRegister"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" >
         <action
-            android:id="@+id/action_fragmentTwo_to_fragmentOne"
-            app:destination="@id/fragmentOne" />
-        <action
-            android:id="@+id/action_fragmentTwo_to_fragmentThree"
-            app:destination="@id/fragmentThree" />
+            android:id="@+id/action_fragmentRegister_to_fragmentMain"
+            app:destination="@id/fragmentMain" />
     </fragment>
     <fragment
-        android:id="@+id/fragmentThree"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentThree"
-        android:label="fragment_three"
-        tools:layout="@layout/fragment_three" >
+        android:id="@+id/fragmentMain"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentMain"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_fragmentThree_to_fragmentOne"
-            app:destination="@id/fragmentOne" />
+            android:id="@+id/action_fragmentMain_to_fragmentProfile"
+            app:destination="@id/fragmentProfile" />
+        <action
+            android:id="@+id/action_fragmentMain_to_fragmentLogin"
+            app:destination="@id/fragmentLogin" />
     </fragment>
+    <fragment
+        android:id="@+id/fragmentProfile"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentProfile"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

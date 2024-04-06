@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalproject_androidstudio.R;
-import com.example.finalproject_androidstudio.fragments.FragmentThree;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

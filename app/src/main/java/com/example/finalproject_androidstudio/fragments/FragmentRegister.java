@@ -30,10 +30,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentTwo#newInstance} factory method to
+ * Use the {@link FragmentRegister#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentTwo extends Fragment {
+public class FragmentRegister extends Fragment {
     private FirebaseAuth mAuth;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -45,7 +45,7 @@ public class FragmentTwo extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public FragmentTwo() {
+    public FragmentRegister() {
         // Required empty public constructor
     }
 
@@ -58,8 +58,8 @@ public class FragmentTwo extends Fragment {
      * @return A new instance of fragment FragmentTwo.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentTwo newInstance(String param1, String param2) {
-        FragmentTwo fragment = new FragmentTwo();
+    public static FragmentRegister newInstance(String param1, String param2) {
+        FragmentRegister fragment = new FragmentRegister();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -82,7 +82,7 @@ public class FragmentTwo extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_two, container, false);
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         EditText firstPersonName = view.findViewById(R.id.regTextFirstName);
         EditText lastPersonName = view.findViewById(R.id.regTextLastName);
@@ -133,8 +133,8 @@ public class FragmentTwo extends Fragment {
         });
 
         // Register
-        Button buttonOne = (Button) view.findViewById(R.id.buttonLogout);
-        buttonOne.setOnClickListener(new View.OnClickListener() {
+        Button logout_btn = (Button) view.findViewById(R.id.buttonLogout);
+        logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Get user inputs from EditText fields
@@ -204,7 +204,7 @@ public class FragmentTwo extends Fragment {
                                                                 // If you want to pass the email to another fragment, you can do so
                                                                 Bundle bundle = new Bundle();
                                                                 bundle.putString("name", fname + " " + lname);
-                                                                Navigation.findNavController(view).navigate(R.id.action_fragmentTwo_to_fragmentThree, bundle);
+                                                                Navigation.findNavController(view).navigate(R.id.action_fragmentRegister_to_fragmentMain, bundle);
                                                             } else {
                                                                 Toast.makeText(getActivity(), "Failed to save user data", Toast.LENGTH_SHORT).show();
                                                             }
@@ -223,11 +223,11 @@ public class FragmentTwo extends Fragment {
 
 
         // Logout button
-        Button buttonLogout = (Button) view.findViewById(R.id.returnButton);
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
+        Button return_btn = (Button) view.findViewById(R.id.returnButton);
+        return_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.action_fragmentTwo_to_fragmentOne);
+//                Navigation.findNavController(view).navigate(R.);
             }
         });
 

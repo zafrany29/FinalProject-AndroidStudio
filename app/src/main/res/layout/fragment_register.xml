@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.FragmentProfile">
+    tools:context=".fragments.FragmentRegister">
 
     <TextView
         android:id="@+id/PageTwoTitle"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:gravity="center"
-        android:text="עדכון פרטים אישיים"
+        android:text="הרשמה"
         android:textSize="22sp"
         android:textStyle="bold" />
 
@@ -29,20 +29,20 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/cancelButton"
+            android:id="@+id/returnButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:backgroundTint="#0394F4"
-            android:text="ביטול" />
+            android:text="חזור" />
 
         <Button
-            android:id="@+id/updateButton"
+            android:id="@+id/buttonLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:backgroundTint="#0394F4"
-            android:text="עדכן" />
+            android:text="הירשם" />
 
     </LinearLayout>
 

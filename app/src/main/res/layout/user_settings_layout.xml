@@ -1,20 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragments.FragmentTwo">
-
-    <TextView
-        android:id="@+id/PageTwoTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:text="הרשמה"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/regTextFirstName"
@@ -81,7 +69,7 @@
         android:gravity="right"
         android:hint="שנות ניסיון"
         android:inputType="number"
-    />
+        />
 
     <EditText
         android:id="@+id/regTextEmailAddress"
@@ -122,29 +110,5 @@
         android:gravity="right"
         android:hint="טקסט חופשי"
         android:inputType="text" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/returnButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="#0394F4"
-            android:text="חזור" />
-
-        <Button
-            android:id="@+id/buttonLogout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="#0394F4"
-            android:text="הירשם" />
-
-    </LinearLayout>
 
 </LinearLayout>
