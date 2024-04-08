@@ -1,153 +1,123 @@
 package com.example.finalproject_androidstudio.activities;
 
+import com.google.firebase.firestore.PropertyName;
+
+import java.util.List;
+
 public class User {
-    public String fname;
-    public String lname;
-    public String profession;
-    public String gender;
-    public String location;
-    public String userType;
-    public String email;
-    public String password;
-    public String phone;
-    public String text;
-    public String years;
-    public boolean active = true;
-    public double rate = -1;
+    @PropertyName("full_name")
+    private String fullName;
+    @PropertyName("email")
+    private String email;
+    @PropertyName("phone_number")
+    private String phoneNumber;
+    @PropertyName("location")
+    private String location;
+    @PropertyName("calendar")
+    private List<String> calendar;
+    @PropertyName("active")
+    private boolean active;
+    @PropertyName("rating")
+    private double rating;
+    @PropertyName("who_am_i")
+    private WhoAmI whoAmI; // Declare whoAmI field
+
+    public enum WhoAmI {
+        USER,
+        BABYSITTER,
+        ADMIN
+    }
 
     public User() {
+        // Default constructor required for Firestore
     }
 
-    public User(String fname, String lname, String profession, String gender, String location,
-                String userType, String email, String password, String phone, String text,
-                String years) {
-        this.fname = fname;
-        this.lname = lname;
-        this.profession = profession;
-        this.gender = gender;
-        this.location = location;
-        this.userType = userType;
+    public User(String fullName, String email, String phoneNumber, String location, List<String> calendar, WhoAmI whoAmI) {
+        this.fullName = fullName;
         this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.text = text;
-        this.years = years;
-    }
-
-    public User(String fname, String lname, String gender, String location, String userType,
-                String email, String password, String phone, String text) {
-        this.fname = fname;
-        this.lname = lname;
-        this.gender = gender;
+        this.phoneNumber = phoneNumber;
         this.location = location;
-        this.userType = userType;
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.text = text;
+        this.calendar = calendar;
+        this.whoAmI = whoAmI; // Initialize whoAmI field
     }
 
-    public String getFname() {
-        return fname;
+    @PropertyName("full_name")
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFname(String fname) {
-        this.fname = fname;
+    @PropertyName("full_name")
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public String getLname() {
-        return lname;
-    }
-
-    public void setLname(String lname) {
-        this.lname = lname;
-    }
-
-    public String getProfession() {
-        return profession;
-    }
-
-    public void setProfession(String profession) {
-        this.profession = profession;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
+    @PropertyName("email")
     public String getEmail() {
         return email;
     }
 
+    @PropertyName("email")
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    @PropertyName("phone_number")
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @PropertyName("phone_number")
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getPhone() {
-        return phone;
+    @PropertyName("location")
+    public String getLocation() {
+        return location;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    @PropertyName("location")
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public String getText() {
-        return text;
+    @PropertyName("calendar")
+    public List<String> getCalendar() {
+        return calendar;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    @PropertyName("calendar")
+    public void setCalendar(List<String> calendar) {
+        this.calendar = calendar;
     }
 
-    public String getYears() {
-        return years;
-    }
-
-    public void setYears(String years) {
-        this.years = years;
-    }
-
+    @PropertyName("active")
     public boolean isActive() {
         return active;
     }
 
+    @PropertyName("active")
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    public double getRate() {
-        return rate;
+    @PropertyName("rating")
+    public double getRating() {
+        return rating;
     }
 
-    public void setRate(double rate) {
-        this.rate = rate;
+    @PropertyName("rating")
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    @PropertyName("who_am_i")
+    public WhoAmI getWhoAmI() {
+        return whoAmI;
+    }
+
+    @PropertyName("who_am_i")
+    public void setWhoAmI(WhoAmI whoAmI) {
+        this.whoAmI = whoAmI;
     }
 }

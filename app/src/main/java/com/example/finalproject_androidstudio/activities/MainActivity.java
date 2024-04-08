@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
 
     public static User user;
+    private Babysitter babysitter;
 
     public static User getUser() {
         return user;
@@ -21,27 +22,15 @@ public class MainActivity extends AppCompatActivity {
     public static void setUser(User user) {
         MainActivity.user = user;
     }
+    public void setBabysitter(Babysitter babysitter) {
+        this.babysitter = babysitter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FirebaseApp.initializeApp(this);
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-        myRef.setValue("Hello, World!");
-
-        myRef.setValue("Hello, World!", new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    System.out.println("Data could not be saved " + databaseError.getMessage());
-                } else {
-                    System.out.println("Data saved successfully.");
-                }
-            }
-        });
 
     }
 }

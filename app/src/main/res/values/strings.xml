@@ -29,6 +29,20 @@
         <item>מחוז הדרום</item>
     </string-array>
 
+    <string-array name="ageRange">
+        <item>פעוט (0-3 שנים)</item>
+        <item>גן ילדים (3-5 שנים)</item>
+        <item>בני נוער (5-12 שנים)</item>
+        <item>נער מתבגר (13+ שנים)</item>
+    </string-array>
+
+    <string-array name="experience">
+        <item>0-3 שנים</item>
+        <item>3-5 שנים</item>
+        <item>5-12 שנים</item>
+        <item>13+ שנים</item>
+    </string-array>
+
     <string-array name="user_type_array">
         <item>בחר סוג משתמש</item>
         <item>לקוח</item>
@@ -38,7 +52,6 @@
     <string-array name="profession_array">
         <item>בחר מקצוע</item>
         <item>בייביסיטר</item>
-        <item>דוג-ווקר</item>
     </string-array>
 
 </resources>

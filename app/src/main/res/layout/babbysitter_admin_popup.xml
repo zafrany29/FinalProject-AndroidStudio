@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:padding="20dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="20dp">
+
+    <RelativeLayout
+        android:id="@+id/mainRLayout_popup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/profile_photo_popup"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerHorizontal="true"/>
+
+        <GridView
+            android:id="@+id/user_grid_view"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_below="@id/profile_photo_popup"
+            android:numColumns="3"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/user_grid_view">
+
+            <TextView
+                android:id="@+id/scrolling_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Discription: goes here "
+                android:scrollbars="vertical" />
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

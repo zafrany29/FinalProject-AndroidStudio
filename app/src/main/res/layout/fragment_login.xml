@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#00FF0E0E"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
-    tools:context=".fragments.FragmentLogin">
+    tools:context=".fragments.FragmentLogin"
+    android:layout_marginBottom="80dp">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -42,6 +43,7 @@
 
 
     </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/TextPassword"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"

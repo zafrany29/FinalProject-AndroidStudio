@@ -1,49 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragments.FragmentRegister">
 
-    <TextView
-        android:id="@+id/PageTwoTitle"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:text="הרשמה"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/userSettingsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/user_settings_layout"/>
+        <TextView
+            android:id="@+id/PageTwoTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="הרשמה"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right"
-        android:orientation="horizontal">
+        <ScrollView
+            android:id="@+id/usrLayoutScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/PageTwoTitle">
+
+            <include
+                android:id="@+id/userSettingsLayout"
+                layout="@layout/user_settings_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </ScrollView>
 
         <Button
-            android:id="@+id/returnButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/register_btn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/usrLayoutScrollView"
             android:layout_gravity="right"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
             android:backgroundTint="#0394F4"
-            android:text="חזור" />
+            android:gravity="center"
+            android:text="Register" />
 
         <Button
-            android:id="@+id/buttonLogout"
+            android:id="@+id/return_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_margin="10dp"
             android:backgroundTint="#0394F4"
-            android:text="הירשם" />
-
-    </LinearLayout>
-
-</LinearLayout>
+            android:text="Back" />
+    </RelativeLayout>
+</ScrollView>

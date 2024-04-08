@@ -6,44 +6,56 @@
     android:orientation="vertical"
     tools:context=".fragments.FragmentProfile">
 
-    <TextView
-        android:id="@+id/PageTwoTitle"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:text="עדכון פרטים אישיים"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/userSettingsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/user_settings_layout"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right"
-        android:orientation="horizontal">
+            <TextView
+                android:id="@+id/PageTwoTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="עדכון פרטים אישיים"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="#0394F4"
-            android:text="ביטול" />
+            <include
+                android:id="@+id/userSettingsLayout"
+                layout="@layout/user_settings_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/PageTwoTitle"/>
 
-        <Button
-            android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="#0394F4"
-            android:text="עדכן" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:orientation="horizontal"
+                android:layout_below="@id/userSettingsLayout">
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/cancelButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:backgroundTint="#0394F4"
+                    android:text="ביטול" />
 
+                <Button
+                    android:id="@+id/updateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:backgroundTint="#0394F4"
+                    android:text="עדכן" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>
