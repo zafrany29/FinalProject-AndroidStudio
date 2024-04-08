@@ -3,38 +3,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/fragmentOne">
-    <fragment
-        android:id="@+id/fragmentOne"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentOne"
-        android:label="fragment_one"
-        tools:layout="@layout/fragment_one" >
-        <action
-            android:id="@+id/action_fragmentOne_to_fragmentTwo"
-            app:destination="@id/fragmentTwo" />
-        <action
-            android:id="@+id/action_fragmentOne_to_fragmentThree"
-            app:destination="@id/fragmentThree" />
-    </fragment>
-    <fragment
-        android:id="@+id/fragmentTwo"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentTwo"
-        android:label="fragment_two"
-        tools:layout="@layout/fragment_two" >
-        <action
-            android:id="@+id/action_fragmentTwo_to_fragmentOne"
-            app:destination="@id/fragmentOne" />
-        <action
-            android:id="@+id/action_fragmentTwo_to_fragmentThree"
-            app:destination="@id/fragmentThree" />
-    </fragment>
+    app:startDestination="@id/fragmentLogin">
     <fragment
         android:id="@+id/fragmentThree"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentThree"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentMain"
         android:label="fragment_three"
-        tools:layout="@layout/fragment_three" >
+        tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_fragmentThree_to_fragmentOne"
-            app:destination="@id/fragmentOne" />
+            android:id="@+id/action_fragmentThree_to_fragmentLogin"
+            app:destination="@id/fragmentLogin" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentRegisterTwo2"
+        android:name="com.example.finalproject_androidstudio.fragments.registerFragments.FragmentRegisterTwo"
+        android:label="fragment_register_two"
+        tools:layout="@layout/fragment_register_two" >
+        <action
+            android:id="@+id/action_fragmentRegisterTwo2_to_fragmentRegisterOne2"
+            app:destination="@id/fragmentRegisterOne2" />
+        <action
+            android:id="@+id/action_fragmentRegisterTwo2_to_fragmentRegisterThree"
+            app:destination="@id/fragmentRegisterThree" />
+        <action
+            android:id="@+id/action_fragmentRegisterTwo2_to_fragmentThree"
+            app:destination="@id/fragmentThree" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentRegisterOne2"
+        android:name="com.example.finalproject_androidstudio.fragments.registerFragments.FragmentRegisterOne"
+        android:label="fragment_register_one"
+        tools:layout="@layout/fragment_register_one" >
+        <action
+            android:id="@+id/action_fragmentRegisterOne2_to_fragmentLogin"
+            app:destination="@id/fragmentLogin" />
+        <action
+            android:id="@+id/action_fragmentRegisterOne2_to_fragmentRegisterTwo2"
+            app:destination="@id/fragmentRegisterTwo2" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentLogin"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentLogin"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_fragmentLogin_to_fragmentRegisterOne2"
+            app:destination="@id/fragmentRegisterOne2" />
+        <action
+            android:id="@+id/action_fragmentLogin_to_fragmentThree"
+            app:destination="@id/fragmentThree" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentRegisterThree"
+        android:name="com.example.finalproject_androidstudio.fragments.registerFragments.FragmentRegisterThree"
+        android:label="fragment_register_three"
+        tools:layout="@layout/fragment_register_three" >
+        <action
+            android:id="@+id/action_fragmentRegisterThree_to_fragmentRegisterTwo2"
+            app:destination="@id/fragmentRegisterTwo2" />
+        <action
+            android:id="@+id/action_fragmentRegisterThree_to_fragmentThree"
+            app:destination="@id/fragmentThree" />
     </fragment>
 </navigation>

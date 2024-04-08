@@ -3,48 +3,54 @@ package com.example.finalproject_androidstudio.activities;
 public class User {
     public String fname;
     public String lname;
-    public String profession;
     public String gender;
     public String location;
-    public String userType;
+    public String birthDate;
     public String email;
     public String password;
     public String phone;
-    public String text;
-    public String years;
+    public String text = "";
+    public Permissions permission = Permissions.USER;
     public boolean active = true;
-    public double rate = -1;
 
     public User() {
     }
 
-    public User(String fname, String lname, String profession, String gender, String location,
-                String userType, String email, String password, String phone, String text,
-                String years) {
+    public User(String fname, String lname, String gender, String location,
+                String birthDate, String email, String password, String phone,
+                String text) {
+        if (fname == null || fname.trim().isEmpty()) throw new IllegalArgumentException("First name is mandatory");
+        if (lname == null || lname.trim().isEmpty()) throw new IllegalArgumentException("Last name is mandatory");
+        if (gender == null || gender.trim().isEmpty()) throw new IllegalArgumentException("Gender is mandatory");
+        if (location == null || location.trim().isEmpty()) throw new IllegalArgumentException("Location is mandatory");
+        if (birthDate == null || birthDate.trim().isEmpty()) throw new IllegalArgumentException("BirthDate is mandatory");
+        if (email == null || email.trim().isEmpty()) throw new IllegalArgumentException("Email is mandatory");
+        if (password == null || password.trim().isEmpty()) throw new IllegalArgumentException("Password is mandatory");
+        if (phone == null || phone.trim().isEmpty()) throw new IllegalArgumentException("Phone is mandatory");
+
         this.fname = fname;
         this.lname = lname;
-        this.profession = profession;
         this.gender = gender;
         this.location = location;
-        this.userType = userType;
+        this.birthDate = birthDate;
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.text = text;
-        this.years = years;
+        this.text = text; // Optional, can be empty
     }
 
-    public User(String fname, String lname, String gender, String location, String userType,
-                String email, String password, String phone, String text) {
-        this.fname = fname;
-        this.lname = lname;
-        this.gender = gender;
-        this.location = location;
-        this.userType = userType;
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.text = text;
+    // Constructor without optional text (uses default)
+    public User(String fname, String lname, String gender, String location,
+                String birthDate, String email, String password, String phone) {
+        this(fname, lname, gender, location, birthDate, email, password, phone, "");
+    }
+
+    public Permissions getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Permissions permission) {
+        this.permission = permission;
     }
 
     public String getFname() {
@@ -52,6 +58,7 @@ public class User {
     }
 
     public void setFname(String fname) {
+        if (fname == null || fname.trim().isEmpty()) throw new IllegalArgumentException("First name is mandatory");
         this.fname = fname;
     }
 
@@ -60,15 +67,8 @@ public class User {
     }
 
     public void setLname(String lname) {
+        if (lname == null || lname.trim().isEmpty()) throw new IllegalArgumentException("Last name is mandatory");
         this.lname = lname;
-    }
-
-    public String getProfession() {
-        return profession;
-    }
-
-    public void setProfession(String profession) {
-        this.profession = profession;
     }
 
     public String getGender() {
@@ -76,6 +76,7 @@ public class User {
     }
 
     public void setGender(String gender) {
+        if (gender == null || gender.trim().isEmpty()) throw new IllegalArgumentException("Gender is mandatory");
         this.gender = gender;
     }
 
@@ -84,15 +85,17 @@ public class User {
     }
 
     public void setLocation(String location) {
+        if (location == null || location.trim().isEmpty()) throw new IllegalArgumentException("Location is mandatory");
         this.location = location;
     }
 
-    public String getUserType() {
-        return userType;
+    public String getBirthDate() {
+        return birthDate;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setBirthDate(String birthDate) {
+        if (birthDate == null || birthDate.trim().isEmpty()) throw new IllegalArgumentException("BirthDate is mandatory");
+        this.birthDate = birthDate;
     }
 
     public String getEmail() {
@@ -100,6 +103,7 @@ public class User {
     }
 
     public void setEmail(String email) {
+        if (email == null || email.trim().isEmpty()) throw new IllegalArgumentException("Email is mandatory");
         this.email = email;
     }
 
@@ -108,6 +112,7 @@ public class User {
     }
 
     public void setPassword(String password) {
+        if (password == null || password.trim().isEmpty()) throw new IllegalArgumentException("Password is mandatory");
         this.password = password;
     }
 
@@ -116,6 +121,7 @@ public class User {
     }
 
     public void setPhone(String phone) {
+        if (phone == null || phone.trim().isEmpty()) throw new IllegalArgumentException("Phone number is mandatory");
         this.phone = phone;
     }
 
@@ -127,27 +133,11 @@ public class User {
         this.text = text;
     }
 
-    public String getYears() {
-        return years;
-    }
-
-    public void setYears(String years) {
-        this.years = years;
-    }
-
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public double getRate() {
-        return rate;
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
     }
 }
