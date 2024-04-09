@@ -3,6 +3,7 @@ package com.example.finalproject_androidstudio.fragments;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,20 +20,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
+import android.Manifest;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
 import com.example.finalproject_androidstudio.activities.User;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
@@ -40,9 +41,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,9 +48,10 @@ import java.util.List;
 
 public class FragmentRegister extends Fragment {
 
+    private static final int PERMISSION_REQUEST_CODE = 123;
+    private CheckBox regBabysitterCheckBox;
     private FirebaseAuth mAuth;
     private EditText editTextEmail, editTextPassword;
-    private CheckBox regBabysitterCheckBox;
     private LinearLayout regBabysitterForm;
     private Button registerButton;
     private Button returnButton;
@@ -114,11 +113,13 @@ public class FragmentRegister extends Fragment {
 
         regBabysitterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
                 regBabysitterForm.setVisibility(View.VISIBLE);
             } else {
                 regBabysitterForm.setVisibility(View.GONE);
             }
         });
+
 
         // Set click listeners
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +136,24 @@ public class FragmentRegister extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                regBabysitterForm.setVisibility(View.VISIBLE);
+            } else {
+                // Permission denied, show a toast message
+                Toast.makeText(getActivity(), "הרשאות למצלמה ולגלריה לא ניתנו, לא ניתן לפתוח פרופיל נותן שירות", Toast.LENGTH_LONG).show();
+                regBabysitterForm.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private boolean checkPermissions() {
+        return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
     private  void initPhotoButtons(View view)
     {
