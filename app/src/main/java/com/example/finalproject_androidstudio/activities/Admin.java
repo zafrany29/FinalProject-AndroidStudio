@@ -4,7 +4,7 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.util.List;
 
-public class Admin extends User {
+public class Admin extends MyUser {
     @PropertyName("verified_babysitters")
     private List<Babysitter> verifiedBabysitters;
 

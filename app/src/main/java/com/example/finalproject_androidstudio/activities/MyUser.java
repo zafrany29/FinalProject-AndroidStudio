@@ -4,7 +4,7 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.util.List;
 
-public class User {
+public class MyUser {
     @PropertyName("full_name")
     private String fullName;
     @PropertyName("email")
@@ -28,11 +28,11 @@ public class User {
         ADMIN
     }
 
-    public User() {
+    public MyUser() {
         // Default constructor required for Firestore
     }
 
-    public User(String fullName, String email, String phoneNumber, String location, List<String> calendar, WhoAmI whoAmI) {
+    public MyUser(String fullName, String email, String phoneNumber, String location, List<String> calendar, WhoAmI whoAmI) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;

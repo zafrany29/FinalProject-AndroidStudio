@@ -6,20 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.finalproject_androidstudio.R;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static User user;
+    public static MyUser user;
     private Babysitter babysitter;
 
-    public static User getUser() {
+    public static MyUser getUser() {
         return user;
     }
 
-    public static void setUser(User user) {
+    public static void setUser(MyUser user) {
         MainActivity.user = user;
     }
     public void setBabysitter(Babysitter babysitter) {

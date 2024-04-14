@@ -4,26 +4,24 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.util.List;
 
-public class Babysitter extends User {
+public class Babysitter extends MyUser {
     @PropertyName("id_photo_url")
     private String idPhotoUrl;
     @PropertyName("profile_photo_url")
     private String profilePhotoUrl;
-    @PropertyName("social_link")
+    @PropertyName("socialLink")
     private String socialLink;
     @PropertyName("experience")
-    private int experience;
-    @PropertyName("age")
-    private int age;
+    private String experience;
     @PropertyName("speciality")
     private String speciality;
-    @PropertyName("kids_age_range")
+    @PropertyName("kidsAgeRange")
     private String kidsAgeRange;
     @PropertyName("salary")
     private double salary;
     @PropertyName("rating")
     private double rating;
-    @PropertyName("is_verified")
+    @PropertyName("isVerified")
     private boolean isVerified;
     @PropertyName("description")
     private String description;
@@ -33,7 +31,7 @@ public class Babysitter extends User {
     }
 
     public Babysitter(String fullName, String email, String phoneNumber, String location, String description, List<String> calendar,
-                      String idPhotoUrl, String profilePhotoUrl, String socialLink, int experience, int age,
+                      String idPhotoUrl, String profilePhotoUrl, String socialLink, String experience,
                       String speciality, String kidsAgeRange, double salary, double rating, boolean isVerified) {
         // Set whoAmI to BABYSITTER since it's specific to this class
         super(fullName, email, phoneNumber, location, calendar, WhoAmI.BABYSITTER);
@@ -42,7 +40,6 @@ public class Babysitter extends User {
         this.profilePhotoUrl = profilePhotoUrl;
         this.socialLink = socialLink;
         this.experience = experience;
-        this.age = age;
         this.speciality = speciality;
         this.kidsAgeRange = kidsAgeRange;
         this.salary = salary;
@@ -82,23 +79,13 @@ public class Babysitter extends User {
     }
 
     @PropertyName("experience")
-    public int getExperience() {
+    public String getExperience() {
         return experience;
     }
 
     @PropertyName("experience")
-    public void setExperience(int experience) {
+    public void setExperience(String experience) {
         this.experience = experience;
-    }
-
-    @PropertyName("age")
-    public int getAge() {
-        return age;
-    }
-
-    @PropertyName("age")
-    public void setAge(int age) {
-        this.age = age;
     }
 
     @PropertyName("speciality")
