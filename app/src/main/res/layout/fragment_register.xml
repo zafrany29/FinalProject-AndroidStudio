@@ -50,8 +50,19 @@
             android:id="@+id/return_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:backgroundTint="#0394F4"
-            android:text="Back" />
+            android:text="Back"
+            android:layout_alignParentTop="true"/>
+
+        <ProgressBar
+            android:id="@+id/registration_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_centerInParent="true" />
     </RelativeLayout>
 </ScrollView>

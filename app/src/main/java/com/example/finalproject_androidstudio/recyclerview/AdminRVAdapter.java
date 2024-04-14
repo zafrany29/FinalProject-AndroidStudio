@@ -7,14 +7,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.finalproject_androidstudio.activities.User;
+import com.example.finalproject_androidstudio.activities.MyUser;
 
 import java.util.ArrayList;
 
 public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.AdminViewHolder>{
 
     Context context;
-    ArrayList<User> myUserList;
+    ArrayList<MyUser> myUserList;
 
     public AdminRVAdapter() {
     }

@@ -1,13 +1,16 @@
 package com.example.finalproject_androidstudio.fragments;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,81 +18,106 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.Manifest;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
-import com.example.finalproject_androidstudio.activities.User;
+import com.example.finalproject_androidstudio.activities.MyUser;
+import com.example.finalproject_androidstudio.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
 
 public class FragmentRegister extends Fragment {
 
-    private static final int PERMISSION_REQUEST_CODE = 123;
-    private CheckBox regBabysitterCheckBox;
     private FirebaseAuth mAuth;
     private EditText editTextEmail, editTextPassword;
+    private CheckBox regBabysitterCheckBox;
     private LinearLayout regBabysitterForm;
     private Button registerButton;
     private Button returnButton;
     private View rootView;
-    private EditText selectedDateEditText;
-    private TextInputLayout selectedDateInputLayout;
-
-    private static final int PHOTO_PICK_REQUEST_CODE = 1;
-    private static final int ID_PHOTO_PICK_REQUEST_CODE = 2;
-
+    private Button registerBtn;
+    private Button returnBtn;
+    private Button regUploadPhotoBtn;
+    private Button regUploadIDPhotoBtn;
     private ImageView regBbsPhoto;
     private ImageView regBbsIDPhoto;
-    private Button regUploadPhotoButton;
-    private Button regUploadIDPhotoButton;
+    private EditText regTextFullName;
+    private EditText regTextEmailAddress;
+    private EditText regTextSelectedDate;
+    private EditText regTextPassword;
+    private EditText regTextRePassword;
+    private EditText regPhoneNumber;
+    private AutoCompleteTextView regLocation;
+    private AutoCompleteTextView regGender;
+    private AutoCompleteTextView regSpinnerExperience;
+    private AutoCompleteTextView regSpinnerKidsAge;
+    private EditText regEditTextSocialLink;
+    private EditText regEditTextSalary;
+    private EditText regEditTextDescription;
+    private CheckBox regBabysitterCheckBox;
+    private LinearLayout regBabysitterForm;
+    private ProgressBar registrationProgressBar;
 
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    private StorageReference mStorageRef;
 
-
-    public FragmentRegister() {
-        // Required empty public constructor
+    PhotoType photoType;
+    public enum PhotoType {
+        PROFILE_PHOTO,
+        ID_PHOTO
     }
 
-    @Override
+
+    private static final int GALLERY_REQUEST_CODE = 1001;
+    private static final int CAMERA_REQUEST_CODE = 1002;
+
+    ActivityMainBinding activityMainBinding;
+    public FragmentRegister() {
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         rootView = inflater.inflate(R.layout.fragment_register, container, false);
 
-        // Find the button
-        selectedDateInputLayout = rootView.findViewById(R.id.regTextSelectedDate);
-        selectedDateEditText = rootView.findViewById(R.id.regEditTextSelectedDate);
+        // Initialize Firebase components
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        // Set OnClickListener to show DatePickerDialog
-        selectedDateInputLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
-            }
-        });
+        initViews();
+
+        initSpinners();
+
+        initListeners();
+
+        regBabysitterForm.setVisibility(regBabysitterCheckBox.isChecked() ? View.VISIBLE : View.GONE);
 
         return rootView;
     }
@@ -111,80 +139,30 @@ public class FragmentRegister extends Fragment {
         initPhotoButtons(view);
         initSpinners(view);
 
-//        regBabysitterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            if (isChecked) {
-//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-//                regBabysitterForm.setVisibility(View.VISIBLE);{
-//                }
-//            } else {
-//                regBabysitterForm.setVisibility(View.GONE);
-//            }
-//        });
-
         regBabysitterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-                regBabysitterForm.setVisibility(View.VISIBLE);{
-                }
+                regBabysitterForm.setVisibility(View.VISIBLE);
             } else {
                 regBabysitterForm.setVisibility(View.GONE);
             }
         });
 
-
-
-
-
-
         // Set click listeners
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUser();
+                photoType = PhotoType.PROFILE_PHOTO;
+                showImageSourceDialog();
             }
         });
 
-        returnButton.setOnClickListener(new View.OnClickListener() {
+        regUploadIDPhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate back
-                getActivity().onBackPressed();
+                photoType = PhotoType.ID_PHOTO;
+                showImageSourceDialog();
             }
         });
-    }
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == PERMISSION_REQUEST_CODE) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                regBabysitterForm.setVisibility(View.VISIBLE);
-//            } else {
-//                // Permission denied, show a toast message
-//                Toast.makeText(getActivity(), "הרשאות למצלמה ולגלריה לא ניתנו, לא ניתן לפתוח פרופיל נותן שירות", Toast.LENGTH_LONG).show();
-//                regBabysitterForm.setVisibility(View.GONE);
-//            }
-//        }
-//    }
-@Override
-public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == PERMISSION_REQUEST_CODE) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted, proceed with your action
-            // Example: uploadPhoto();
-        } else {
-            // Permission denied, inform the user
-            Toast.makeText(getActivity(), "הרשאות למצלמה ולגלריה לא ניתנו, לא ניתן לפתוח פרופיל נותן שירות", Toast.LENGTH_LONG).show();
-            regBabysitterForm.setVisibility(View.GONE);
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-
-        }
-    }
-}
-
-    private boolean checkPermissions() {
-        return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
     private  void initPhotoButtons(View view)
     {
@@ -193,133 +171,218 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         regBbsPhoto = rootView.findViewById(R.id.regBbsPhoto);
         regBbsIDPhoto = rootView.findViewById(R.id.regBbsIDPhoto);
 
-
-        // Set OnClickListener for Upload Photo button
-        regUploadPhotoButton.setOnClickListener(new View.OnClickListener() {
+        regBabysitterCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                // Prompt user to select a photo from gallery
-                openGalleryForPhoto();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Toggle visibility of the babysitter form based on checkbox state
+                regBabysitterForm.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
-
-        // Set OnClickListener for Upload ID Photo button
-        regUploadIDPhotoButton.setOnClickListener(new View.OnClickListener() {
+        registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Prompt user to select an ID photo from gallery
-                openGalleryForIDPhoto();
+                // Register the user with Firebase Authentication
+                registerUser();
             }
         });
     }
-    private void initSpinners(View view)
-    {
-        // Set adapter for gender AutoCompleteTextView
-        AutoCompleteTextView regGenderSpinner = view.findViewById(R.id.regGenderSpinner);
+
+    private void initViews() {
+        registerBtn = rootView.findViewById(R.id.register_btn);
+        returnBtn = rootView.findViewById(R.id.return_btn);
+        regTextFullName = rootView.findViewById(R.id.regEditTextFullName);
+        regTextEmailAddress = rootView.findViewById(R.id.regEditTextEmailAddress);
+        regTextSelectedDate = rootView.findViewById(R.id.regEditTextSelectedDate);
+        regTextPassword = rootView.findViewById(R.id.regPasswordEditText);
+        regTextRePassword = rootView.findViewById(R.id.regRePasswordEditText);
+        regPhoneNumber = rootView.findViewById(R.id.regPhoneNumberEditText);
+        regLocation = rootView.findViewById(R.id.regLocationSpinner);
+        regGender = rootView.findViewById(R.id.regGenderSpinner);
+        regSpinnerExperience = rootView.findViewById(R.id.regSpinnerExperience);
+        regSpinnerKidsAge = rootView.findViewById(R.id.regSpinnerKidsAge);
+        regEditTextSocialLink = rootView.findViewById(R.id.regEditTextSocialLink);
+        regEditTextSalary = rootView.findViewById(R.id.regEditTextSalary);
+        regEditTextDescription = rootView.findViewById(R.id.regEditTextDescription);
+        regBabysitterCheckBox = rootView.findViewById(R.id.regBabysitterCheckBox);
+        regBabysitterForm = rootView.findViewById(R.id.regBabysitterForm);
+        registrationProgressBar = rootView.findViewById(R.id.registration_progress_bar);
+
+        regUploadPhotoBtn = rootView.findViewById(R.id.regUploadPhoto_btn);
+        regUploadIDPhotoBtn = rootView.findViewById(R.id.regUploadIDPhoto_btn);
+        regBbsPhoto = rootView.findViewById(R.id.regBbsPhoto);
+        regBbsIDPhoto = rootView.findViewById(R.id.regBbsIDPhoto);
+    }
+
+    private void initSpinners() {
+        // Populate gender spinner
         ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.gender_array, android.R.layout.simple_dropdown_item_1line);
-        regGenderSpinner.setAdapter(genderAdapter);
+                R.array.gender_array, android.R.layout.simple_spinner_item);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regGender.setAdapter(genderAdapter);
 
-        // Set adapter for location AutoCompleteTextView
-        AutoCompleteTextView regLocationSpinner = view.findViewById(R.id.regLocationSpinner);
+        // Populate location spinner
         ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.location_array, android.R.layout.simple_dropdown_item_1line);
-        regLocationSpinner.setAdapter(locationAdapter);
+                R.array.location_array, android.R.layout.simple_spinner_item);
+        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regLocation.setAdapter(locationAdapter);
 
-        // Set adapter for age range AutoCompleteTextView (assuming you have one)
-        AutoCompleteTextView regAgeRangeSpinner = view.findViewById(R.id.regSpinnerKidsAge);
-        ArrayAdapter<CharSequence> ageRangeAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.ageRange, android.R.layout.simple_dropdown_item_1line);
-        regAgeRangeSpinner.setAdapter(ageRangeAdapter);
+        // Populate kids age spinner
+        ArrayAdapter<CharSequence> ageAdapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.ageRange, android.R.layout.simple_spinner_item);
+        ageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regSpinnerKidsAge.setAdapter(ageAdapter);
 
-        // Set adapter for experience AutoCompleteTextView (assuming you have one)
-        AutoCompleteTextView regExperienceSpinner = view.findViewById(R.id.regSpinnerExperience);
+        // Populate experience spinner
         ArrayAdapter<CharSequence> experienceAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.experience, android.R.layout.simple_dropdown_item_1line);
-        regExperienceSpinner.setAdapter(experienceAdapter);
-    }
-    private void registerUser() {
-        String email = editTextEmail.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
-
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            createAppropriateUser(user);
-                        } else {
-                            // Registration failed
-                            Toast.makeText(getContext(), "Registration failed", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                R.array.experience, android.R.layout.simple_spinner_item);
+        experienceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regSpinnerExperience.setAdapter(experienceAdapter);
     }
 
-    private void createAppropriateUser(FirebaseUser firebaseUser) {
-        if (firebaseUser != null) {
-            boolean isBabysitter = regBabysitterCheckBox.isChecked();
-            if (isBabysitter) {
-                Babysitter babysitter = populateBabysitterFrom();
-                if (babysitter != null) {
-                    saveBabysitterDataToRealtimeDatabase(firebaseUser, babysitter);
-                } else {
-                    // Show a message to the user indicating missing or invalid fields
-                    Toast.makeText(getContext(), "Please fill in all babysitter fields", Toast.LENGTH_SHORT).show();
+    private void showImageSourceDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Choose Image Source");
+        builder.setItems(new CharSequence[]{"Gallery", "Camera"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        launchGallery();
+                        break;
+                    case 1:
+                        launchCamera();
+                        break;
                 }
-            } else {
-                User user = populateUserFromForm();
-                if (user != null) {
-                    saveUserDataToRealtimeDatabase(firebaseUser, user);
-                } else {
-                    // Show a message to the user indicating missing or invalid fields
-                    Toast.makeText(getContext(), "Please fill in all user fields", Toast.LENGTH_SHORT).show();
-                }
+            }
+        });
+        builder.show();
+    }
+
+    private void launchGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+    }
+
+    private void launchCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+        } else {
+            Toast.makeText(getContext(), "No camera app found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GALLERY_REQUEST_CODE && data != null) {
+                // Handle image selected from gallery
+                Uri selectedImageUri = data.getData();
+                handleImage(selectedImageUri);
+            } else if (requestCode == CAMERA_REQUEST_CODE && data != null && data.getExtras() != null) {
+                // Handle image captured from camera
+                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+                Uri imageUri = getImageUri(imageBitmap, this.getContext());
+                handleImage(imageUri);
             }
         }
     }
-    private User populateUserFromForm() {
-        EditText fullNameEditText = rootView.findViewById(R.id.regEditTextFullName);
-        EditText emailEditText = rootView.findViewById(R.id.regEditTextEmailAddress);
-        EditText phoneNumberEditText = rootView.findViewById(R.id.regPhoneNumberEditText);
-        EditText locationEditText = rootView.findViewById(R.id.regLocationSpinner);
-        EditText passwordEditText = rootView.findViewById(R.id.regPasswordEditText);
-        EditText rePasswordEditText = rootView.findViewById(R.id.regRePasswordEditText);
-
-        String fullName = fullNameEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
-        String phoneNumber = phoneNumberEditText.getText().toString().trim();
-        String location = locationEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString();
-        String rePassword = rePasswordEditText.getText().toString();
-
-        if (fullName.isEmpty() || email.isEmpty() || phoneNumber.isEmpty() || location.isEmpty() || password.isEmpty()) {
-            Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-
-        if (!rePassword.equals(password)) {
-            Toast.makeText(getContext(), "Password must match", Toast.LENGTH_SHORT).show();
-            passwordEditText.setText("");
-            rePasswordEditText.setText("");
-            return null;
-        }
-
-        if (password.length() < 8) {
-            Toast.makeText(getContext(), "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-
-        if (!isValidEmail(email)) {
-            Toast.makeText(getContext(), "Please enter a valid email address", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-
-        return new User(fullName, email, phoneNumber, location, null, User.WhoAmI.USER);
+    private Uri getImageUri(Bitmap bitmap, Context context) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
     }
-    private boolean isValidEmail(CharSequence target) {
-        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    private void handleImage(Uri imageUri) {
+        // Set the image to the appropriate ImageView based on the photo type
+        if (imageUri != null) {
+            switch (photoType) {
+                case PROFILE_PHOTO:
+                    regBbsPhoto.setImageURI(imageUri);
+                    break;
+                case ID_PHOTO:
+                    regBbsIDPhoto.setImageURI(imageUri);
+                    break;
+            }
+        } else {
+            Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
+        }
+        photoType = null;
+    }
+
+    // Back end
+
+    private Object validateUserForm() {
+        // Get user data from UI fields
+        String fullName = regTextFullName.getText().toString().trim();
+        String email = regTextEmailAddress.getText().toString().trim();
+        String password = regTextPassword.getText().toString().trim();
+        String reEnteredPassword = regTextRePassword.getText().toString().trim();
+        String selectedDate = regTextSelectedDate.getText().toString().trim();
+        String phoneNumber = regPhoneNumber.getText().toString().trim();
+        String location = regLocation.getText().toString().trim();
+        String gender = regGender.getText().toString().trim();
+        String experience = regSpinnerExperience.getText().toString().trim();
+        String kidsAgeRange = regSpinnerKidsAge.getText().toString().trim();
+        String socialLink = regEditTextSocialLink.getText().toString().trim();
+        String salary = regEditTextSalary.getText().toString().trim();
+        String description = regEditTextDescription.getText().toString().trim();
+
+        // Check if the checkbox is checked to determine user type
+        boolean isBabysitter = regBabysitterCheckBox.isChecked();
+
+        // Get image URLs as strings
+        String profilePhotoUrl = getImageUrlFromImageView(regBbsPhoto);
+        String idPhotoUrl = getImageUrlFromImageView(regBbsIDPhoto);
+
+        // Validate the data
+        if (TextUtils.isEmpty(fullName)) {
+            Toast.makeText(getContext(), "Please enter your full name", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(getContext(), "Please enter your email address", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(getContext(), "Please enter a password", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (password.length() < 6) {
+            Toast.makeText(getContext(), "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (!TextUtils.equals(password, reEnteredPassword)) {
+            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        if (isBabysitter) {
+            // If the checkbox is checked, create a Babysitter object
+            return new Babysitter(fullName, email, phoneNumber, location, description, null,
+                    profilePhotoUrl, idPhotoUrl, socialLink, experience, null, kidsAgeRange,
+                    Double.parseDouble(salary), 0, false);
+        } else {
+            // If the checkbox is unchecked, create a regular User object
+            return new MyUser(fullName, email, phoneNumber, location, null, MyUser.WhoAmI.USER);
+        }
+    }
+    private String getImageUrlFromImageView(ImageView imageView) {
+        Drawable drawable = imageView.getDrawable();
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            // Convert Bitmap to URL string and return
+            return bitmapToString(bitmap);
+        } else {
+            // Handle other types of Drawables or null case
+            return null;
+        }
     }
     private Babysitter populateBabysitterFrom() {
         // Get references to all the form fields
@@ -342,7 +405,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         String description = descriptionEditText.getText().toString().trim();
         String selectedDate = selectedDateEditText.getText().toString().trim();
         String socialLink = socialLinkEditText.getText().toString().trim();
-        String experience = experienceEditText.getText().toString().trim();
+        int experience = Integer.parseInt(experienceEditText.getText().toString().trim());
         String kidsAge = kidsAgeEditText.getText().toString().trim();
         double salary = Double.parseDouble(salaryEditText.getText().toString().trim());
 
@@ -364,112 +427,65 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
 
         // Set other specific fields of Babysitter here
 
-        return babysitter;
+    private String bitmapToString(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
+    private void registerUser() {
+        // Validate user form data
+        Object newUser = validateUserForm();
+        String email = regTextEmailAddress.getText().toString().trim();
+        String password = regTextPassword.getText().toString().trim();
+        if (newUser != null) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
 
-
-    private void saveBabysitterDataToRealtimeDatabase(FirebaseUser firebaseUser, Babysitter babysitter) {
-        // Get a reference to the Realtime Database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference babysittersRef = database.getReference("babysitters");
-
-        // Get the UID of the current user
-        String userId = firebaseUser.getUid();
-
-        // Create a reference to the user's data using the UID
-        DatabaseReference babysitterRef = babysittersRef.child(userId);
-
-        // Write the babysitter data to the database
-        babysitterRef.setValue(babysitter)
-                .addOnSuccessListener(aVoid -> {
-                    // Data saved successfully
-                    Toast.makeText(getContext(), "Babysitter data added to Realtime Database successfully!", Toast.LENGTH_SHORT).show();
-                    // Navigate to the main fragment
-                    Navigation.findNavController(rootView).navigate(R.id.action_fragmentRegister_to_fragmentMain);
-                })
-                .addOnFailureListener(e -> {
-                    // Error occurred while saving data
-                    Toast.makeText(getContext(), "Error adding babysitter data to Realtime Database", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-
-    private void showDatePickerDialog() {
-        // Get current date
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        // Create DatePickerDialog and set listener
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                // Set the selected date to the button text
-                String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
-                selectedDateEditText.setText(selectedDate);
-            }
-        }, year, month, day);
-
-        // Show the dialog
-        datePickerDialog.show();
-    }
-
-    // Assuming this method is inside an activity or fragment
-    // Assuming this method is inside an activity or fragment
-    // Assuming this method is inside a fragment
-    private void saveUserDataToRealtimeDatabase(FirebaseUser firebaseUser, User user) {
-        // Find the NavController associated with the activity
-        NavController navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView);
-
-        // Write the user data to the database
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        String userId = firebaseUser.getUid();
-        DatabaseReference userRef = usersRef.child(userId);
-        userRef.setValue(user)
-                .addOnSuccessListener(aVoid -> {
-                    // Data saved successfully
-                    Toast.makeText(getContext(), "User data added to Realtime Database successfully!", Toast.LENGTH_SHORT).show();
-                    // Navigate to the main fragment
-                    navController.navigate(R.id.action_fragmentRegister_to_fragmentMain);
-                })
-                .addOnFailureListener(e -> {
-                    // Error occurred while saving data
-                    String errorMessage = "Error adding user data to Realtime Database: " + e.getMessage();
-                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    Log.e("Firebase", errorMessage); // Log the error for debugging
-                });
-    }
-
-    private void openGalleryForPhoto() {
-        // Intent to pick an image from gallery
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, PHOTO_PICK_REQUEST_CODE);
-    }
-
-    private void openGalleryForIDPhoto() {
-        // Intent to pick an ID image from gallery
-        Intent idPhotoPickerIntent = new Intent(Intent.ACTION_PICK);
-        idPhotoPickerIntent.setType("image/*");
-        startActivityForResult(idPhotoPickerIntent, ID_PHOTO_PICK_REQUEST_CODE);
-    }
-
-    // Handle the result after the user selects an image from gallery
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PHOTO_PICK_REQUEST_CODE && data != null) {
-                // Update the ImageView with the selected photo
-                Uri imageUri = data.getData();
-                regBbsPhoto.setImageURI(imageUri);
-            } else if (requestCode == ID_PHOTO_PICK_REQUEST_CODE && data != null) {
-                // Update the ImageView with the selected ID photo
-                Uri imageUri = data.getData();
-                regBbsIDPhoto.setImageURI(imageUri);
-            }
+                                // Sign in success, update UI with the signed-in user's information
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                // Add user data to Firebase Realtime Database
+                                if (user != null) {
+                                    uploadUserDataToRealtimeDatabase(newUser);
+                                } else {
+                                    Toast.makeText(getContext(), "Failed to get user information", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(getContext(), "Authentication failed: " + task.getException().getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         }
+    }
+
+    private void uploadUserDataToRealtimeDatabase(Object userData) {
+        // Push user data to "users" node in the database
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        String userId = usersRef.push().getKey();
+        if (userId != null) {
+
+            registrationProgressBar.setVisibility(View.VISIBLE);
+
+
+            usersRef.child(userId).setValue(userData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "Failed to register user", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+        registrationProgressBar.setVisibility(View.INVISIBLE);
     }
 }
