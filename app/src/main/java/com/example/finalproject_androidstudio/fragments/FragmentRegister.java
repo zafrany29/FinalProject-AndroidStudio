@@ -342,7 +342,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         String description = descriptionEditText.getText().toString().trim();
         String selectedDate = selectedDateEditText.getText().toString().trim();
         String socialLink = socialLinkEditText.getText().toString().trim();
-        int experience = Integer.parseInt(experienceEditText.getText().toString().trim());
+        String experience = experienceEditText.getText().toString().trim();
         String kidsAge = kidsAgeEditText.getText().toString().trim();
         double salary = Double.parseDouble(salaryEditText.getText().toString().trim());
 

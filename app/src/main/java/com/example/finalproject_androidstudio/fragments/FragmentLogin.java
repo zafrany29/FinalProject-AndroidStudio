@@ -30,6 +30,7 @@ public class FragmentLogin extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
     }
 
     @Override

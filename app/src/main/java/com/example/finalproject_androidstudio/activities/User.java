@@ -7,6 +7,8 @@ import java.util.List;
 public class User {
     @PropertyName("full_name")
     private String fullName;
+    @PropertyName("age")
+    private int age;
     @PropertyName("email")
     private String email;
     @PropertyName("phone_number")
@@ -17,8 +19,6 @@ public class User {
     private List<String> calendar;
     @PropertyName("active")
     private boolean active;
-    @PropertyName("rating")
-    private double rating;
     @PropertyName("who_am_i")
     private WhoAmI whoAmI; // Declare whoAmI field
 
@@ -39,6 +39,14 @@ public class User {
         this.location = location;
         this.calendar = calendar;
         this.whoAmI = whoAmI; // Initialize whoAmI field
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     @PropertyName("full_name")
@@ -99,16 +107,6 @@ public class User {
     @PropertyName("active")
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    @PropertyName("rating")
-    public double getRating() {
-        return rating;
-    }
-
-    @PropertyName("rating")
-    public void setRating(double rating) {
-        this.rating = rating;
     }
 
     @PropertyName("who_am_i")

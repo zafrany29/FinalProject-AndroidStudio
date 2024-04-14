@@ -48,7 +48,8 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Babysitter babysitter = babysitterList.get(position);
         holder.fullNameTextView.setText(babysitter.getFullName());
-        holder.kidsAgeRangeAndExperienceTextView.setText(babysitter.getKidsAgeRange() + ", " + babysitter.getExperience());
+        holder.kidsAgeRangeAndExperienceTextView.setText(babysitter.getKidsAgeRange());
+        // + ", " + babysitter.getExperience()
         holder.ratingBar.setRating((float) babysitter.getRating());
     }
 
