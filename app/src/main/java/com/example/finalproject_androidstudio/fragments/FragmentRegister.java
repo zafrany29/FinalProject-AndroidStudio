@@ -111,14 +111,29 @@ public class FragmentRegister extends Fragment {
         initPhotoButtons(view);
         initSpinners(view);
 
+//        regBabysitterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if (isChecked) {
+//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+//                regBabysitterForm.setVisibility(View.VISIBLE);{
+//                }
+//            } else {
+//                regBabysitterForm.setVisibility(View.GONE);
+//            }
+//        });
+
         regBabysitterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-                regBabysitterForm.setVisibility(View.VISIBLE);
+                regBabysitterForm.setVisibility(View.VISIBLE);{
+                }
             } else {
                 regBabysitterForm.setVisibility(View.GONE);
             }
         });
+
+
+
+
 
 
         // Set click listeners
@@ -137,19 +152,35 @@ public class FragmentRegister extends Fragment {
             }
         });
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                regBabysitterForm.setVisibility(View.VISIBLE);
-            } else {
-                // Permission denied, show a toast message
-                Toast.makeText(getActivity(), "הרשאות למצלמה ולגלריה לא ניתנו, לא ניתן לפתוח פרופיל נותן שירות", Toast.LENGTH_LONG).show();
-                regBabysitterForm.setVisibility(View.GONE);
-            }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == PERMISSION_REQUEST_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                regBabysitterForm.setVisibility(View.VISIBLE);
+//            } else {
+//                // Permission denied, show a toast message
+//                Toast.makeText(getActivity(), "הרשאות למצלמה ולגלריה לא ניתנו, לא ניתן לפתוח פרופיל נותן שירות", Toast.LENGTH_LONG).show();
+//                regBabysitterForm.setVisibility(View.GONE);
+//            }
+//        }
+//    }
+@Override
+public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (requestCode == PERMISSION_REQUEST_CODE) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted, proceed with your action
+            // Example: uploadPhoto();
+        } else {
+            // Permission denied, inform the user
+            Toast.makeText(getActivity(), "הרשאות למצלמה ולגלריה לא ניתנו, לא ניתן לפתוח פרופיל נותן שירות", Toast.LENGTH_LONG).show();
+            regBabysitterForm.setVisibility(View.GONE);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+
         }
     }
+}
 
     private boolean checkPermissions() {
         return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&

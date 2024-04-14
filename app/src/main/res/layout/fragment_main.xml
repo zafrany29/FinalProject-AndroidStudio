@@ -6,10 +6,8 @@
     tools:context=".fragments.FragmentMain">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+
+
 
     <Button
         android:id="@+id/logout_btn"
@@ -17,5 +15,14 @@
         android:layout_height="wrap_content"
         android:text="LogOut"
         android:layout_alignParentBottom="true"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
 
 </RelativeLayout>

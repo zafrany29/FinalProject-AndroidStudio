@@ -9,11 +9,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="170dp"
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <!-- Photo and Small Text Box Container -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -21,7 +20,6 @@
             android:gravity="start"
             android:orientation="vertical">
 
-            <!-- Photo -->
             <ImageView
                 android:id="@+id/photoImageView"
                 android:layout_width="match_parent"
@@ -29,7 +27,6 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_background" />
 
-            <!-- Small Text Box -->
             <EditText
                 android:id="@+id/smallTextBoxEditText"
                 android:layout_width="match_parent"
@@ -39,7 +36,6 @@
                 android:maxLines="1" />
         </LinearLayout>
 
-        <!-- Rating and Text Box Container -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -47,7 +43,6 @@
             android:gravity="start|end"
             android:orientation="vertical">
 
-            <!-- Rating Bar -->
 
             <RatingBar
                 android:id="@+id/ratingBar"
@@ -56,7 +51,6 @@
                 android:numStars="5"
                 android:stepSize="1" />
 
-            <!-- Text Box -->
             <EditText
                 android:id="@+id/textEditText"
                 android:layout_width="match_parent"
@@ -66,27 +60,11 @@
                 android:inputType="textMultiLine"
                 android:maxLines="3" />
 
-            <!-- Contact Button -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/rateButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="Rate" />
-
-                <Button
-                    android:id="@+id/contactButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="Contact" />
             </LinearLayout>
 
         </LinearLayout>
