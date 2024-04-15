@@ -94,13 +94,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Rate this person" />
+                    android:backgroundTint="#0394F4"
+                    android:gravity="center"
+                    android:text="Rate" />
 
                 <Button
                     android:id="@+id/buttonClose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="#0394F4"
+                    android:gravity="center"
                     android:text="Close" />
             </LinearLayout>
 
