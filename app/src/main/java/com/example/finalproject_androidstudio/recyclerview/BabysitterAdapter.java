@@ -3,6 +3,7 @@ package com.example.finalproject_androidstudio.recyclerview;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -26,14 +28,19 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
     // ViewHolder class to hold references to views within each row
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView fullNameTextView;
-        TextView kidsAgeRangeAndExperienceTextView;
+        TextView kidsAgeRangeAndAgeTextView;
         RatingBar ratingBar;
+        ImageView photoImageView;
+
+
 
         public ViewHolder(View itemView) {
             super(itemView);
             fullNameTextView = itemView.findViewById(R.id.smallTextBoxEditText);
-            kidsAgeRangeAndExperienceTextView = itemView.findViewById(R.id.textEditText);
+            kidsAgeRangeAndAgeTextView = itemView.findViewById(R.id.textEditText);
             ratingBar = itemView.findViewById(R.id.ratingBar);
+            photoImageView = itemView.findViewById(R.id.photoImageView);
+
         }
     }
 
@@ -48,9 +55,15 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Babysitter babysitter = babysitterList.get(position);
         holder.fullNameTextView.setText(babysitter.getFullName());
-        holder.kidsAgeRangeAndExperienceTextView.setText(babysitter.getKidsAgeRange());
-        // + ", " + babysitter.getExperience()
+        holder.kidsAgeRangeAndAgeTextView.setText( "ילדים בגיל:"+ babysitter.getKidsAgeRange()+","+babysitter.getLocation());
         holder.ratingBar.setRating((float) babysitter.getRating());
+        Picasso.get().load(babysitter.getProfilePhotoUrl()).into(holder.photoImageView);
+//        Picasso.get()
+//                .load(babysitter.getProfilePhotoUrl())
+//                .placeholder(R.drawable.baseline_logout_24) // Placeholder image
+//                .error(R.drawable.baseline_logout_24) // Error placeholder image
+//                .into(holder.photoImageView);
+
     }
 
     @Override

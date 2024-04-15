@@ -5,10 +5,10 @@ import com.google.firebase.firestore.PropertyName;
 import java.util.List;
 
 public class Babysitter extends User {
-//    @PropertyName("id_photo_url")
-//    private String idPhotoUrl;
-//    @PropertyName("profile_photo_url")
-//    private String profilePhotoUrl;
+    @PropertyName("id_photo_url")
+    private String idPhotoUrl;
+    @PropertyName("profile_photo_url")
+    private String profilePhotoUrl;
     @PropertyName("socialLink")
     private String socialLink;
     @PropertyName("experience")
@@ -36,8 +36,8 @@ public class Babysitter extends User {
         // Set whoAmI to BABYSITTER since it's specific to this class
         super(fullName, email, phoneNumber, location, calendar, WhoAmI.BABYSITTER);
         // Initialize other fields specific to Babysitter
-//        this.idPhotoUrl = idPhotoUrl;
-//        this.profilePhotoUrl = profilePhotoUrl;
+        this.idPhotoUrl = idPhotoUrl;
+        this.profilePhotoUrl = profilePhotoUrl;
         this.socialLink = socialLink;
         this.experience = experience;
         this.speciality = speciality;
@@ -48,25 +48,25 @@ public class Babysitter extends User {
         this.description = description;
     }
 
-//    @PropertyName("id_photo_url")
-//    public String getIdPhotoUrl() {
-//        return idPhotoUrl;
-//    }
-//
-//    @PropertyName("id_photo_url")
-//    public void setIdPhotoUrl(String idPhotoUrl) {
-//        this.idPhotoUrl = idPhotoUrl;
-//    }
-//
-//    @PropertyName("profile_photo_url")
-//    public String getProfilePhotoUrl() {
-//        return profilePhotoUrl;
-//    }
-//
-//    @PropertyName("profile_photo_url")
-//    public void setProfilePhotoUrl(String profilePhotoUrl) {
-//        this.profilePhotoUrl = profilePhotoUrl;
-//    }
+    @PropertyName("id_photo_url")
+    public String getIdPhotoUrl() {
+        return idPhotoUrl;
+    }
+
+    @PropertyName("id_photo_url")
+    public void setIdPhotoUrl(String idPhotoUrl) {
+        this.idPhotoUrl = idPhotoUrl;
+    }
+
+    @PropertyName("profile_photo_url")
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
+    }
+
+    @PropertyName("profile_photo_url")
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
+    }
 
     @PropertyName("social_link")
     public String getSocialLink() {

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
+import com.example.finalproject_androidstudio.activities.User;
 import com.example.finalproject_androidstudio.recyclerview.BabysitterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -61,14 +62,14 @@ public class FragmentMain extends Fragment {
     }
 
     private void retrieveDataFromFirebase() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("babysitters");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Babysitter> babysitters = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Babysitter babysitter = snapshot.getValue(Babysitter.class);
-                    if (babysitter != null) {
+                    if (babysitter != null && babysitter.getWhoAmI() == User.WhoAmI.BABYSITTER && babysitter.isVerified()) {
                         babysitters.add(babysitter);
                     }
                 }
