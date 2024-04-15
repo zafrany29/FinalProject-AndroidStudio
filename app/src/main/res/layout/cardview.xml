@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.6"
             android:gravity="start"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
 
             <ImageView
@@ -29,17 +30,19 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_background" />
 
-            <EditText
-                android:id="@+id/smallTextBoxEditText"
+            <TextView
+                android:id="@+id/fullNameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:hint="Small Text"
                 android:inputType="text"
                 android:maxLines="1"
-                android:editable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"/>
+                android:paddingTop="5dp"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -57,26 +60,20 @@
                 android:layout_height="wrap_content"
                 android:numStars="5"
                 android:stepSize="1"
-                android:isIndicator="true" />
+                android:isIndicator="true"
+                style="?android:attr/ratingBarStyleIndicator" />
 
-            <EditText
-                android:id="@+id/textEditText"
+            <TextView
+                android:id="@+id/detailsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:hint="Enter text here"
                 android:inputType="textMultiLine"
                 android:maxLines="3"
-                android:editable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-            </LinearLayout>
+                android:padding="5dp" />
 
         </LinearLayout>
 

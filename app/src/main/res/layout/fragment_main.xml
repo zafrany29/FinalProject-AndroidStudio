@@ -8,21 +8,22 @@
     <!-- TODO: Update blank fragment layout -->
 
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:padding="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
 
     <Button
         android:id="@+id/logout_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LogOut"
-        android:layout_alignParentBottom="true"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"/>
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
+        android:text="LogOut" />
 
 </RelativeLayout>

@@ -26,7 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -38,53 +40,8 @@ public class FragmentMain extends Fragment {
 
     private FirebaseAuth mAuth;
     private BabysitterAdapter adapter;
-
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
-
-        // Find RecyclerView by its ID
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-
-        // Create an instance of BabysitterAdapter and set it to the RecyclerView
-        adapter = new BabysitterAdapter(new ArrayList<>());
-        recyclerView.setAdapter(adapter);
-
-        // Assuming you're using a LinearLayoutManager, set it to the RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        // Retrieve data from Firebase and populate RecyclerView
-        retrieveDataFromFirebase();
-
-        return view;
-    }
-
-    private void retrieveDataFromFirebase() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Babysitter> babysitters = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Babysitter babysitter = snapshot.getValue(Babysitter.class);
-                    if (babysitter != null && babysitter.getWhoAmI() == User.WhoAmI.BABYSITTER && babysitter.isVerified()) {
-                        babysitters.add(babysitter);
-                    }
-                }
-                adapter.setData(babysitters); // Set data to adapter
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Failed to read data from Firebase.", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-
+    private RecyclerView recyclerView;
+    private View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -124,15 +81,11 @@ public class FragmentMain extends Fragment {
         mAuth = FirebaseAuth.getInstance();
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_main, container, false);
-//    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        retrieveDataFromFirebase();
 
         Button logoutButton = view.findViewById(R.id.logout_btn);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +95,60 @@ public class FragmentMain extends Fragment {
                 mAuth.signOut();
                 // Navigate to the login screen
                 Navigation.findNavController(v).navigate(R.id.action_fragmentMain_to_fragmentLogin);
+            }
+        });
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_main, container, false);
+
+        // Find RecyclerView by its ID
+        recyclerView = view.findViewById(R.id.recyclerView);
+
+        // Create an instance of BabysitterAdapter and set it to the RecyclerView
+        adapter = new BabysitterAdapter(new ArrayList<>());
+        recyclerView.setAdapter(adapter);
+
+        // Assuming you're using a LinearLayoutManager, set it to the RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // Retrieve data from Firebase and populate RecyclerView
+        retrieveDataFromFirebase();
+
+        return view;
+    }
+
+    private void retrieveDataFromFirebase() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                List<Babysitter> babysitters = new ArrayList<>();
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Babysitter babysitter = snapshot.getValue(Babysitter.class);
+//                    if (babysitter != null && babysitter.getWhoAmI() == User.WhoAmI.BABYSITTER && babysitter.isVerified()) {
+//                        babysitters.add(babysitter);
+//                    }
+//                }
+//                adapter.setData(babysitters); // Set data to adapter
+                Map<String, Babysitter> babysitterMap = new HashMap<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Babysitter babysitter = snapshot.getValue(Babysitter.class);
+                    if (babysitter != null && babysitter.getWhoAmI() == User.WhoAmI.BABYSITTER && babysitter.isVerified()) {
+                        babysitterMap.put(babysitter.getEmail(), babysitter); // Use ID as key
+                    }
+                }
+                // Convert map values to list
+                List<Babysitter> babysitters = new ArrayList<>(babysitterMap.values());
+                adapter.setData(babysitters); // Set data to adapter
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Failed to read data from Firebase.", Toast.LENGTH_SHORT).show();
             }
         });
     }

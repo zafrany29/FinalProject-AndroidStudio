@@ -373,6 +373,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference babysittersRef = database.getReference("babysitters");
 
+
         // Get the UID of the current user
         String userId = firebaseUser.getUid();
 
