@@ -6,6 +6,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,9 +31,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
@@ -45,20 +45,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 
 public class FragmentRegister extends Fragment {
 
-    private FirebaseAuth mAuth;
-    private EditText editTextEmail, editTextPassword;
-    private CheckBox regBabysitterCheckBox;
-    private LinearLayout regBabysitterForm;
-    private Button registerButton;
-    private Button returnButton;
+
     private View rootView;
     private Button registerBtn;
     private Button returnBtn;
@@ -122,33 +117,9 @@ public class FragmentRegister extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private void initListeners(){
 
-        mAuth = FirebaseAuth.getInstance();
-        rootView = view;
-
-        editTextEmail = view.findViewById(R.id.regEditTextEmailAddress);
-        editTextPassword = view.findViewById(R.id.regPasswordEditText);
-        regBabysitterCheckBox = view.findViewById(R.id.regBabysitterCheckBox);
-        regBabysitterForm = view.findViewById(R.id.regBabysitterForm);
-        registerButton = view.findViewById(R.id.register_btn);
-        returnButton = view.findViewById(R.id.return_btn);
-
-        initPhotoButtons(view);
-        initSpinners(view);
-
-        regBabysitterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                regBabysitterForm.setVisibility(View.VISIBLE);
-            } else {
-                regBabysitterForm.setVisibility(View.GONE);
-            }
-        });
-
-        // Set click listeners
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        regUploadPhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 photoType = PhotoType.PROFILE_PHOTO;
@@ -163,13 +134,6 @@ public class FragmentRegister extends Fragment {
                 showImageSourceDialog();
             }
         });
-    }
-    private  void initPhotoButtons(View view)
-    {
-        regUploadPhotoButton = view.findViewById(R.id.regUploadPhoto_btn);
-        regUploadIDPhotoButton = view.findViewById(R.id.regUploadIDPhoto_btn);
-        regBbsPhoto = rootView.findViewById(R.id.regBbsPhoto);
-        regBbsIDPhoto = rootView.findViewById(R.id.regBbsIDPhoto);
 
         regBabysitterCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -384,48 +348,6 @@ public class FragmentRegister extends Fragment {
             return null;
         }
     }
-    private Babysitter populateBabysitterFrom() {
-        // Get references to all the form fields
-        EditText fullNameEditText = rootView.findViewById(R.id.regEditTextFullName);
-        EditText emailEditText = rootView.findViewById(R.id.regEditTextEmailAddress);
-        EditText phoneNumberEditText = rootView.findViewById(R.id.regPhoneNumberEditText);
-        EditText locationEditText = rootView.findViewById(R.id.regLocationSpinner);
-        EditText descriptionEditText = rootView.findViewById(R.id.regEditTextDescription);
-        EditText selectedDateEditText = rootView.findViewById(R.id.regEditTextSelectedDate);
-        EditText socialLinkEditText = rootView.findViewById(R.id.regEditTextSocialLink);
-        EditText experienceEditText = rootView.findViewById(R.id.regSpinnerExperience);
-        EditText kidsAgeEditText = rootView.findViewById(R.id.regSpinnerKidsAge);
-        EditText salaryEditText = rootView.findViewById(R.id.regEditTextSalary);
-
-        // Get the text from all the form fields
-        String fullName = fullNameEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
-        String phoneNumber = phoneNumberEditText.getText().toString().trim();
-        String location = locationEditText.getText().toString().trim();
-        String description = descriptionEditText.getText().toString().trim();
-        String selectedDate = selectedDateEditText.getText().toString().trim();
-        String socialLink = socialLinkEditText.getText().toString().trim();
-        int experience = Integer.parseInt(experienceEditText.getText().toString().trim());
-        String kidsAge = kidsAgeEditText.getText().toString().trim();
-        double salary = Double.parseDouble(salaryEditText.getText().toString().trim());
-
-        // Create a List<String> to hold the calendar data (assuming you have a way to get it)
-        List<String> calendar = new ArrayList<>(); // Populate this list with calendar data
-
-        // Create a Babysitter object and populate it with the retrieved data
-        Babysitter babysitter = new Babysitter();
-        babysitter.setFullName(fullName);
-        babysitter.setEmail(email);
-        babysitter.setPhoneNumber(phoneNumber);
-        babysitter.setLocation(location);
-        babysitter.setDescription(description);
-        babysitter.setCalendar(calendar);
-        babysitter.setSocialLink(socialLink);
-        babysitter.setExperience(experience);
-        babysitter.setKidsAgeRange(kidsAge);
-        babysitter.setSalary(salary);
-
-        // Set other specific fields of Babysitter here
 
     private String bitmapToString(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

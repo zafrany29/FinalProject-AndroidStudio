@@ -4,7 +4,7 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.util.List;
 
-public class Babysitter extends User {
+public class Babysitter extends MyUser {
     @PropertyName("id_photo_url")
     private String idPhotoUrl;
     @PropertyName("profile_photo_url")
