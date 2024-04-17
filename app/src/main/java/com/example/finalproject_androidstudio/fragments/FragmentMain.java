@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
 import com.example.finalproject_androidstudio.activities.User;
+import com.example.finalproject_androidstudio.databinding.FragmentMainBinding;
 import com.example.finalproject_androidstudio.recyclerview.BabysitterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -100,7 +102,7 @@ public class FragmentMain extends Fragment {
         greetingText = view.findViewById(R.id.greeting_text);
 
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -159,6 +161,20 @@ public class FragmentMain extends Fragment {
 
         // Assuming you're using a LinearLayoutManager, set it to the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        ImageButton profileButton = view.findViewById(R.id.profile_btn);
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.action_fragmentMain_to_fragmentProfile);
+            }
+        });
+
+        FragmentMainBinding binding = FragmentMainBinding.inflate(inflater, container, false);
+
+        binding.profileBtn.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_fragmentMain_to_fragmentProfile);
+        });
 
         return view;
     }

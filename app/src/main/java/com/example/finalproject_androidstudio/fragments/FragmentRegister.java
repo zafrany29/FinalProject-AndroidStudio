@@ -105,7 +105,7 @@ public class FragmentRegister extends Fragment {
         editTextPassword = view.findViewById(R.id.regPasswordEditText);
         regBabysitterCheckBox = view.findViewById(R.id.regBabysitterCheckBox);
         regBabysitterForm = view.findViewById(R.id.regBabysitterForm);
-        registerButton = view.findViewById(R.id.register_btn);
+        registerButton = view.findViewById(R.id.register_btnn);
         returnButton = view.findViewById(R.id.return_btn);
 
         initPhotoButtons(view);
@@ -386,7 +386,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
                     // Data saved successfully
                     Toast.makeText(getContext(), "Babysitter data added to Realtime Database successfully!", Toast.LENGTH_SHORT).show();
                     // Navigate to the main fragment
-                    Navigation.findNavController(rootView).navigate(R.id.action_fragmentRegister_to_fragmentInner);
+                    Navigation.findNavController(rootView).navigate(R.id.action_fragmentRegister_to_fragmentMain);
                 })
                 .addOnFailureListener(e -> {
                     // Error occurred while saving data
@@ -432,7 +432,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
                     // Data saved successfully
                     Toast.makeText(getContext(), "User data added to Realtime Database successfully!", Toast.LENGTH_SHORT).show();
                     // Navigate to the main fragment
-                    navController.navigate(R.id.action_fragmentRegister_to_fragmentInner);
+                    navController.navigate(R.id.action_fragmentRegister_to_fragmentMain);
                 })
                 .addOnFailureListener(e -> {
                     // Error occurred while saving data
