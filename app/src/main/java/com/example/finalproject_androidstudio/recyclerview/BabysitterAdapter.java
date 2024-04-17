@@ -32,10 +32,14 @@ import java.util.List;
 public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.ViewHolder> {
 
     private List<Babysitter> babysitterList;
+    private List<Babysitter> filteredBabysitterList; // Filtered list based on location
+
 
     // Constructor to initialize the list of babysitters
     public BabysitterAdapter(List<Babysitter> babysitterList) {
         this.babysitterList = babysitterList;
+        this.filteredBabysitterList = new ArrayList<>(babysitterList); // Initially set filtered list to full list
+
     }
 
     // ViewHolder class to hold references to views within each row
@@ -71,11 +75,6 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         holder.kidsAgeRangeAndAgeTextView.setText( "ילדים בגיל:"+ babysitter.getKidsAgeRange()+","+babysitter.getLocation());
         holder.ratingBar.setRating((float) babysitter.getRating());
         Picasso.get().load(babysitter.getProfilePhotoUrl()).into(holder.photoImageView);
-//        Picasso.get()
-//                .load(babysitter.getProfilePhotoUrl())
-//                .placeholder(R.drawable.baseline_logout_24) // Placeholder image
-//                .error(R.drawable.baseline_logout_24) // Error placeholder image
-//                .into(holder.photoImageView);
 
         holder.itemView.setOnClickListener(v -> {
             showDialog(babysitter, v.getContext()); // Show dialog on item click
@@ -84,12 +83,28 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return babysitterList.size();
+        return filteredBabysitterList.size();
     }
 
+    // Method to set full list of babysitters and update filtered list
     public void setData(List<Babysitter> babysitters) {
         this.babysitterList = babysitters;
-        notifyDataSetChanged();
+        filterData("");
+    }
+    public void filterData(String location) {
+        filteredBabysitterList.clear();
+        if (location.isEmpty() || location.equals("All Locations")) {
+            // No filter or All Locations selected, show full list
+            filteredBabysitterList.addAll(babysitterList);
+        } else {
+            // Filter by location (case-insensitive comparison)
+            for (Babysitter babysitter : babysitterList) {
+                if (babysitter.getLocation().equalsIgnoreCase(location)) {
+                    filteredBabysitterList.add(babysitter);
+                }
+            }
+        }
+        notifyDataSetChanged(); // Notify adapter of data change
     }
 
     // Method to show AlertDialog with details
