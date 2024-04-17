@@ -86,17 +86,6 @@ public class FragmentMain extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         retrieveDataFromFirebase();
-
-        Button logoutButton = view.findViewById(R.id.logout_btn);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Sign out the current user
-                mAuth.signOut();
-                // Navigate to the login screen
-                Navigation.findNavController(v).navigate(R.id.action_fragmentMain_to_fragmentLogin);
-            }
-        });
     }
 
     @Nullable

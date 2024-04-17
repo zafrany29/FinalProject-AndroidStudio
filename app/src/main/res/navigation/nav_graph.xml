@@ -12,8 +12,8 @@
             android:id="@+id/action_fragmentLogin_to_fragmentRegister"
             app:destination="@id/fragmentRegister" />
         <action
-            android:id="@+id/action_fragmentLogin_to_fragmentMain"
-            app:destination="@id/fragmentMain" />
+            android:id="@+id/action_fragmentLogin_to_fragmentInner"
+            app:destination="@id/fragmentInner" />
     </fragment>
     <fragment
         android:id="@+id/fragmentRegister"
@@ -21,24 +21,16 @@
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
-            android:id="@+id/action_fragmentRegister_to_fragmentMain"
-            app:destination="@id/fragmentMain" />
+            android:id="@+id/action_fragmentRegister_to_fragmentInner"
+            app:destination="@id/fragmentInner" />
     </fragment>
     <fragment
-        android:id="@+id/fragmentMain"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentMain"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        android:id="@+id/fragmentInner"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentInner"
+        android:label="fragment_inner"
+        tools:layout="@layout/fragment_inner" >
         <action
-            android:id="@+id/action_fragmentMain_to_fragmentProfile"
-            app:destination="@id/fragmentProfile" />
-        <action
-            android:id="@+id/action_fragmentMain_to_fragmentLogin"
+            android:id="@+id/action_fragmentInner_to_fragmentLogin"
             app:destination="@id/fragmentLogin" />
     </fragment>
-    <fragment
-        android:id="@+id/fragmentProfile"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentProfile"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
 </navigation>

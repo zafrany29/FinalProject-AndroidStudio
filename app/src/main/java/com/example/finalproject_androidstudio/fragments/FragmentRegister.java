@@ -386,7 +386,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
                     // Data saved successfully
                     Toast.makeText(getContext(), "Babysitter data added to Realtime Database successfully!", Toast.LENGTH_SHORT).show();
                     // Navigate to the main fragment
-                    Navigation.findNavController(rootView).navigate(R.id.action_fragmentRegister_to_fragmentMain);
+                    Navigation.findNavController(rootView).navigate(R.id.action_fragmentRegister_to_fragmentInner);
                 })
                 .addOnFailureListener(e -> {
                     // Error occurred while saving data
@@ -432,7 +432,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
                     // Data saved successfully
                     Toast.makeText(getContext(), "User data added to Realtime Database successfully!", Toast.LENGTH_SHORT).show();
                     // Navigate to the main fragment
-                    navController.navigate(R.id.action_fragmentRegister_to_fragmentMain);
+                    navController.navigate(R.id.action_fragmentRegister_to_fragmentInner);
                 })
                 .addOnFailureListener(e -> {
                     // Error occurred while saving data

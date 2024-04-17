@@ -39,7 +39,7 @@ public class FragmentLogin extends Fragment {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Navigation.findNavController(view).navigate(R.id.action_fragmentLogin_to_fragmentMain);
+            Navigation.findNavController(view).navigate(R.id.action_fragmentLogin_to_fragmentInner);
         }
     }
 
@@ -83,7 +83,7 @@ public class FragmentLogin extends Fragment {
                                     FirebaseUser currentUser = mAuth.getCurrentUser();
                                     if (currentUser != null) {
                                         // Navigate to the desired fragment here
-                                        Navigation.findNavController(requireView()).navigate(R.id.action_fragmentLogin_to_fragmentMain);
+                                        Navigation.findNavController(requireView()).navigate(R.id.action_fragmentLogin_to_fragmentInner);
                                         // Finish the current activity to prevent going back to the login screen on back press
                                     }
                                 } else {

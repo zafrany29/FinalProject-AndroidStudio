@@ -77,6 +77,12 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
 //                .error(R.drawable.baseline_logout_24) // Error placeholder image
 //                .into(holder.photoImageView);
 
+        if(babysitter.getRatingCount() == 0 && babysitter.getRating() == 0){
+            holder.ratingBar.setVisibility(View.GONE);
+        } else {
+            holder.ratingBar.setVisibility(View.VISIBLE);
+        }
+
         holder.itemView.setOnClickListener(v -> {
             showDialog(babysitter, v.getContext()); // Show dialog on item click
         });
@@ -110,40 +116,37 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         textViewDetails.setText("Age Range: " + babysitter.getKidsAgeRange() + ", Location: " + babysitter.getLocation());
         Picasso.get().load(babysitter.getProfilePhotoUrl()).into(imageView);
 
+        AlertDialog dialog = builder.create();
+
         ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> {
             if (fromUser) {
-                updateBabysitterRating(babysitter, rating, context);
+                updateBabysitterRating(babysitter, rating, context, dialog);
                 Toast.makeText(context, "Sent rating!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        AlertDialog dialog = builder.create();
         rateButton.setOnClickListener(v -> ratingBar.setVisibility(View.VISIBLE));
         closeButton.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
 
-    private void updateBabysitterRating(Babysitter babysitter, float newRating, Context context) {
+    private void updateBabysitterRating(Babysitter babysitter, float newRating, Context context, AlertDialog dialog) {
         String emailKey = sanitizeEmail(babysitter.getEmail());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(emailKey);
-        System.out.println("Firebase Path: " + ref.toString());  // Check if this path is correct
 
         ref.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Babysitter b = babysitter;
+                Babysitter b = mutableData.getValue(Babysitter.class);
                 if (b == null) {
-                    // Babysitter might not exist if the key is wrong or data has been deleted
-                    return Transaction.abort();  // Stops the transaction
+                    return Transaction.abort();
                 }
 
-                // Update the ratings by recalculating the average
+                // Update logic...
                 int newReviewCount = b.getRatingCount() + 1;
                 double oldRatingsTotal = b.getRating() * b.getRatingCount();
                 double newAverageRating = (oldRatingsTotal + newRating) / newReviewCount;
-
-                // Set updated values
                 b.setRating(newAverageRating);
                 b.setRatingCount(newReviewCount);
                 mutableData.setValue(b);
@@ -152,16 +155,11 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                dialog.dismiss();  // Dismiss dialog regardless of the outcome
                 if (committed) {
                     Toast.makeText(context, "Rating updated!", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (databaseError != null) {
-                        // There was an error during the transaction.
-                        Toast.makeText(context, "Failed to update rating: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Transaction was aborted or didn't result in a commit but without a Firebase error.
-                        Toast.makeText(context, "Update was not committed due to a transaction abort or no data change.", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(context, "Failed to update rating.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
