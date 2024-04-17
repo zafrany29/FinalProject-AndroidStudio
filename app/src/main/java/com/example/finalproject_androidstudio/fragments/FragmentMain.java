@@ -11,7 +11,11 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject_androidstudio.R;
@@ -19,6 +23,7 @@ import com.example.finalproject_androidstudio.activities.Babysitter;
 import com.example.finalproject_androidstudio.activities.User;
 import com.example.finalproject_androidstudio.recyclerview.BabysitterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +47,10 @@ public class FragmentMain extends Fragment {
     private BabysitterAdapter adapter;
     private RecyclerView recyclerView;
     private View view;
+    private Spinner locationSpinner;
+    private List<String> locationList;
+    private ArrayAdapter<String> spinnerAdapter;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,6 +60,7 @@ public class FragmentMain extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView greetingText;
 
     public FragmentMain() {
         // Required empty public constructor
@@ -77,7 +87,6 @@ public class FragmentMain extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mAuth = FirebaseAuth.getInstance();
     }
 
@@ -85,8 +94,56 @@ public class FragmentMain extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        retrieveDataFromFirebase();
+        // Retrieve data from Firebase and populate RecyclerView
+        retrieveDataFromFirebase("");
+        // Initialize greeting text view
+        greetingText = view.findViewById(R.id.greeting_text);
+
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // User data exists, retrieve full name
+                    String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                    String location = dataSnapshot.child("location").getValue(String.class);
+                    retrieveDataFromFirebase(location);
+
+
+                    // Set greeting text
+                    greetingText.setText("שלום " + fullName);
+                } else {
+                    // User data does not exist
+                    greetingText.setText("תקלה");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+        // Setup logout button
+        Button logoutButton = view.findViewById(R.id.logout_btn);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Sign out the current user
+                mAuth.signOut();
+                // Navigate to the login screen
+                Navigation.findNavController(v).navigate(R.id.action_fragmentMain_to_fragmentLogin);
+            }
+        });
+
+        // Setup location spinner
+        locationSpinner = view.findViewById(R.id.location_spinner);
+        setupSpinner();
     }
+
 
     @Nullable
     @Override
@@ -103,30 +160,21 @@ public class FragmentMain extends Fragment {
         // Assuming you're using a LinearLayoutManager, set it to the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        // Retrieve data from Firebase and populate RecyclerView
-        retrieveDataFromFirebase();
-
         return view;
     }
 
-    private void retrieveDataFromFirebase() {
+    private void retrieveDataFromFirebase(String locationFilter) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                List<Babysitter> babysitters = new ArrayList<>();
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Babysitter babysitter = snapshot.getValue(Babysitter.class);
-//                    if (babysitter != null && babysitter.getWhoAmI() == User.WhoAmI.BABYSITTER && babysitter.isVerified()) {
-//                        babysitters.add(babysitter);
-//                    }
-//                }
-//                adapter.setData(babysitters); // Set data to adapter
                 Map<String, Babysitter> babysitterMap = new HashMap<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Babysitter babysitter = snapshot.getValue(Babysitter.class);
                     if (babysitter != null && babysitter.getWhoAmI() == User.WhoAmI.BABYSITTER && babysitter.isVerified()) {
-                        babysitterMap.put(babysitter.getEmail(), babysitter); // Use ID as key
+                        if (locationFilter.isEmpty() || locationFilter.equals("All Locations") || babysitter.getLocation().equalsIgnoreCase(locationFilter)) {
+                            babysitterMap.put(babysitter.getEmail(), babysitter); // Use ID as key
+                        }
                     }
                 }
                 // Convert map values to list
@@ -138,6 +186,57 @@ public class FragmentMain extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(getActivity(), "Failed to read data from Firebase.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void setupSpinner() {
+        locationList = new ArrayList<>();
+        locationList.add("All Locations"); // Default option
+        locationList.add("מחוז צפון");
+        locationList.add("מחוז חיפה");
+        locationList.add("מחוז תל אביב");
+        locationList.add("מחוז המרכז");
+        locationList.add("מחוז ירושלים");
+        locationList.add("מחוז הדרום");
+
+        spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, locationList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpinner.setAdapter(spinnerAdapter);
+
+        // Retrieve current user's location from the database
+        DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String currentUserLocation = dataSnapshot.child("location").getValue(String.class);
+                    if (currentUserLocation != null && !currentUserLocation.isEmpty()) {
+                        // Set the selected item in the spinner to the current user's location
+                        int index = locationList.indexOf(currentUserLocation);
+                        if (index != -1) {
+                            locationSpinner.setSelection(index);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle database error
+            }
+        });
+
+        // Set spinner item selection listener
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedLocation = locationList.get(position);
+                retrieveDataFromFirebase(selectedLocation);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing
             }
         });
     }

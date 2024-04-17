@@ -1,23 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".fragments.FragmentMain">
 
-    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/greeting_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:text="שלום "
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
 
+    <!-- Spinner for selecting location -->
+    <Spinner
+        android:id="@+id/location_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:entries="@array/location_array" />
 
+    <!-- RecyclerView to display babysitters -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_spinner"
         android:layout_marginTop="16dp"
-        android:layout_weight="1"
         android:clipToPadding="false"
         android:padding="10dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp" />
 
-</LinearLayout>
+    <!-- Logout button (assuming it stays at the bottom) -->
+    <Button
+        android:id="@+id/logout_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="#0394F4"
+        android:padding="10dp"
+        android:text="LogOut" />
+
+</RelativeLayout>
