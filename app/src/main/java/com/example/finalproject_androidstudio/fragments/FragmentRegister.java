@@ -31,9 +31,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
+import com.example.finalproject_androidstudio.activities.MainActivity;
 import com.example.finalproject_androidstudio.activities.MyUser;
 import com.example.finalproject_androidstudio.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,8 +50,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.UUID;
 
 public class FragmentRegister extends Fragment {
 
@@ -81,6 +85,9 @@ public class FragmentRegister extends Fragment {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private StorageReference mStorageRef;
+
+    private Uri profilePhoto;
+    private Uri idPhoto;
 
     PhotoType photoType;
     public enum PhotoType {
@@ -232,7 +239,7 @@ public class FragmentRegister extends Fragment {
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         } else {
-            Toast.makeText(getContext(), "No camera app found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No camera app found", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -264,13 +271,15 @@ public class FragmentRegister extends Fragment {
             switch (photoType) {
                 case PROFILE_PHOTO:
                     regBbsPhoto.setImageURI(imageUri);
+                    profilePhoto = imageUri;
                     break;
                 case ID_PHOTO:
                     regBbsIDPhoto.setImageURI(imageUri);
+                    idPhoto = imageUri;
                     break;
             }
         } else {
-            Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_LONG).show();
         }
         photoType = null;
     }
@@ -302,28 +311,47 @@ public class FragmentRegister extends Fragment {
 
         // Validate the data
         if (TextUtils.isEmpty(fullName)) {
-            Toast.makeText(getContext(), "Please enter your full name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter your full name", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getContext(), "Please enter your email address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter your email address", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getContext(), "Please enter a password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter a password", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (password.length() < 6) {
-            Toast.makeText(getContext(), "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Password must be at least 6 characters long", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (!TextUtils.equals(password, reEnteredPassword)) {
-            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_LONG).show();
             return null;
+        }
+        if(salary == null || salary.isEmpty())
+        {
+            try {
+                double parsedSalary = Double.parseDouble(salary);
+                // If parsing successful, do something
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_LONG).show();
+            }
+            Toast.makeText(getContext(), "Please enter Salary", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        if(profilePhotoUrl == null || profilePhotoUrl.toString().isEmpty())
+        {
+            Toast.makeText(getContext(), "Please Select Profile Photo", Toast.LENGTH_LONG).show();
+        }
+        if(idPhoto == null || idPhoto.toString().isEmpty())
+        {
+            Toast.makeText(getContext(), "Please Select ID Photo", Toast.LENGTH_LONG).show();
         }
 
         if (isBabysitter) {
@@ -373,15 +401,40 @@ public class FragmentRegister extends Fragment {
                                 if (user != null) {
                                     uploadUserDataToRealtimeDatabase(newUser);
                                 } else {
-                                    Toast.makeText(getContext(), "Failed to get user information", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Failed to get user information", Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(getContext(), "Authentication failed: " + task.getException().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
                     });
+        }
+    }
+
+    private void uploadImage(Uri image, String type) {
+        try {
+            if (image == null || image.toString().isEmpty()) {
+                throw new IllegalArgumentException("Image URI is null or empty.");
+            }
+
+
+            StorageReference reference = mStorageRef.child("image/" + mAuth.getUid() + "/" + type);
+            reference.putFile(image).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getContext(), "Image Uploaded successfully!", Toast.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(), "Failed To Uploaded Image.", Toast.LENGTH_LONG).show();
+                }
+            });
+        } catch (IllegalArgumentException e) {
+            // Handle the case where the image URI is null or empty
+            Toast.makeText(getContext(), "Image URI is null or empty.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -390,21 +443,23 @@ public class FragmentRegister extends Fragment {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
         String userId = usersRef.push().getKey();
         if (userId != null) {
-
             registrationProgressBar.setVisibility(View.VISIBLE);
-
 
             usersRef.child(userId).setValue(userData)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_LONG).show();
+
+                            uploadImage(profilePhoto, "Profile");
+                            uploadImage(idPhoto, "ID");
+                            Navigation.findNavController(requireView()).navigate(R.id.action_fragmentRegister_to_fragmentMain);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "Failed to register user", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Failed to register user", Toast.LENGTH_LONG).show();
                         }
                     });
         }
