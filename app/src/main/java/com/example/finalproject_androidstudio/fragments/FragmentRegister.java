@@ -414,7 +414,7 @@ public class FragmentRegister extends Fragment {
         }
     }
 
-    private void uploadImage(Uri imageUri, String imageName) {
+    private void uploadImage(Uri imageUri, String imageName, String userId) {
         if (imageUri == null) {
             Toast.makeText(getContext(), "Image Uri is null, can't upload", Toast.LENGTH_SHORT).show();
             return;
@@ -430,10 +430,11 @@ public class FragmentRegister extends Fragment {
                     public void onSuccess(Uri uri) {
                         String photoUrl = uri.toString();
                         // Save photo URL depending on the type of the image
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
                         if (imageName.equals("profile")) {
-                            // Save profile photo URL to Firebase Database or Firestore
+                            userRef.child("profilePhotoUrl").setValue(photoUrl);
                         } else {
-                            // Save ID photo URL to Firebase Database or Firestore
+                            userRef.child("idPhotoUrl").setValue(photoUrl);
                         }
                         Toast.makeText(getContext(), "Image uploaded successfully: " + photoUrl, Toast.LENGTH_SHORT).show();
                     }
@@ -446,6 +447,7 @@ public class FragmentRegister extends Fragment {
             }
         });
     }
+
 
 
     private void uploadUserDataToRealtimeDatabase(Object userData) {
@@ -461,14 +463,10 @@ public class FragmentRegister extends Fragment {
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_LONG).show();
 
-//                            uploadImage(profilePhoto, PhotoType.PROFILE_PHOTO);
-//                            uploadImage(idPhoto, PhotoType.ID_PHOTO);
-                            if (profilePhoto != null) {
-                                uploadImage(profilePhoto, "profile");
-                            }
-                            if (idPhoto != null) {
-                                uploadImage(idPhoto, "ID");
-                            }
+                            // Upload images and save URLs
+                            uploadImage(profilePhoto, "profile", userId);
+                            uploadImage(idPhoto, "ID", userId);
+
                             Navigation.findNavController(requireView()).navigate(R.id.action_fragmentRegister_to_fragmentMain);
                         }
                     })
@@ -481,4 +479,5 @@ public class FragmentRegister extends Fragment {
         }
         registrationProgressBar.setVisibility(View.INVISIBLE);
     }
+
 }

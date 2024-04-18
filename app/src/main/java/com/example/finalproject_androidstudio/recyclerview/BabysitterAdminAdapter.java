@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
 import com.example.finalproject_androidstudio.fragments.BabysitterDetailDialogFragment;
+import com.squareup.picasso.Picasso;
+
 
 import java.util.List;
 
@@ -71,6 +73,13 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
             nameTextView.setText(babysitter.getFullName());
             emailTextView.setText(babysitter.getEmail());
             approvedCheckBox.setChecked(babysitter.isVerified());
+            // Load image using Picasso
+            if (babysitter.getProfilePhotoUrl() != null && !babysitter.getProfilePhotoUrl().isEmpty()) {
+                Picasso.get().load(babysitter.getProfilePhotoUrl()).into(babysitterImageView);
+            } else {
+                // If there's no image URL provided, you can set a placeholder image
+                babysitterImageView.setImageResource(R.drawable.ic_launcher_background);
+            }
         }
     }
 }
