@@ -46,6 +46,23 @@
 
         </ScrollView>
 
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verify"
+            android:layout_below="@id/user_grid_view"
+            android:layout_marginTop="10dp"/>
+
+        <Button
+            android:id="@+id/btnUnverify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unverify"
+            android:layout_below="@id/btnVerify"
+            android:layout_marginTop="10dp"/>
+
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

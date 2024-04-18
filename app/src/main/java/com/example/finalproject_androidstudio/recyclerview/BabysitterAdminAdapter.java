@@ -1,5 +1,6 @@
 package com.example.finalproject_androidstudio.recyclerview;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,19 +9,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
+import com.example.finalproject_androidstudio.fragments.BabysitterDetailDialogFragment;
 
 import java.util.List;
 
 public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdminAdapter.BabysitterViewHolder> {
-
     private List<Babysitter> babysitterList;
+    private List<String> babysitterIds; // This list will store the Firebase UIDs
+    private Context context;
 
-    public BabysitterAdminAdapter(List<Babysitter> babysitterList) {
+    public BabysitterAdminAdapter(Context context, List<Babysitter> babysitterList, List<String> babysitterIds) {
+        this.context = context;
         this.babysitterList = babysitterList;
+        this.babysitterIds = babysitterIds;
     }
 
     @NonNull
@@ -33,6 +39,12 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
     @Override
     public void onBindViewHolder(@NonNull BabysitterViewHolder holder, int position) {
         Babysitter babysitter = babysitterList.get(position);
+        String babysitterId = babysitterIds.get(position); // Get the UID from the list
+        holder.itemView.setOnClickListener(v -> {
+            BabysitterDetailDialogFragment dialogFragment = BabysitterDetailDialogFragment.newInstance(babysitterId);
+            dialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(), "detail");
+        });
+
         holder.bind(babysitter);
     }
 
@@ -41,13 +53,7 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
         return babysitterList.size();
     }
 
-    public void setData(List<Babysitter> babysitterList) {
-        this.babysitterList = babysitterList;
-        notifyDataSetChanged();
-    }
-
     public static class BabysitterViewHolder extends RecyclerView.ViewHolder {
-
         private ImageView babysitterImageView;
         private TextView nameTextView;
         private TextView emailTextView;
@@ -62,10 +68,9 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
         }
 
         public void bind(Babysitter babysitter) {
-            // Bind data to views
             nameTextView.setText(babysitter.getFullName());
             emailTextView.setText(babysitter.getEmail());
-            // Set other properties as needed
+            approvedCheckBox.setChecked(babysitter.isVerified());
         }
     }
 }

@@ -388,6 +388,7 @@ public class FragmentRegister extends Fragment {
         Object newUser = validateUserForm();
         String email = regTextEmailAddress.getText().toString().trim();
         String password = regTextPassword.getText().toString().trim();
+
         if (newUser != null) {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
@@ -413,30 +414,39 @@ public class FragmentRegister extends Fragment {
         }
     }
 
-    private void uploadImage(Uri image, String type) {
-        try {
-            if (image == null || image.toString().isEmpty()) {
-                throw new IllegalArgumentException("Image URI is null or empty.");
-            }
-
-
-            StorageReference reference = mStorageRef.child("image/" + mAuth.getUid() + "/" + type);
-            reference.putFile(image).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(getContext(), "Image Uploaded successfully!", Toast.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getContext(), "Failed To Uploaded Image.", Toast.LENGTH_LONG).show();
-                }
-            });
-        } catch (IllegalArgumentException e) {
-            // Handle the case where the image URI is null or empty
-            Toast.makeText(getContext(), "Image URI is null or empty.", Toast.LENGTH_LONG).show();
+    private void uploadImage(Uri imageUri, String imageName) {
+        if (imageUri == null) {
+            Toast.makeText(getContext(), "Image Uri is null, can't upload", Toast.LENGTH_SHORT).show();
+            return;
         }
+        final StorageReference ref = mStorageRef.child("images/" + UUID.randomUUID().toString() + "_" + imageName);
+        UploadTask uploadTask = ref.putFile(imageUri);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String photoUrl = uri.toString();
+                        // Save photo URL depending on the type of the image
+                        if (imageName.equals("profile")) {
+                            // Save profile photo URL to Firebase Database or Firestore
+                        } else {
+                            // Save ID photo URL to Firebase Database or Firestore
+                        }
+                        Toast.makeText(getContext(), "Image uploaded successfully: " + photoUrl, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     private void uploadUserDataToRealtimeDatabase(Object userData) {
         // Push user data to "users" node in the database
@@ -451,8 +461,14 @@ public class FragmentRegister extends Fragment {
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_LONG).show();
 
-                            uploadImage(profilePhoto, "Profile");
-                            uploadImage(idPhoto, "ID");
+//                            uploadImage(profilePhoto, PhotoType.PROFILE_PHOTO);
+//                            uploadImage(idPhoto, PhotoType.ID_PHOTO);
+                            if (profilePhoto != null) {
+                                uploadImage(profilePhoto, "profile");
+                            }
+                            if (idPhoto != null) {
+                                uploadImage(idPhoto, "ID");
+                            }
                             Navigation.findNavController(requireView()).navigate(R.id.action_fragmentRegister_to_fragmentMain);
                         }
                     })
