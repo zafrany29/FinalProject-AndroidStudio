@@ -2,9 +2,41 @@ package com.example.finalproject_androidstudio.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.finalproject_androidstudio.R;
+import com.example.finalproject_androidstudio.activities.MainActivity;
+import com.example.finalproject_androidstudio.activities.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +46,13 @@ import com.google.firebase.auth.FirebaseAuth;
 public class FragmentProfile extends Fragment {
 
     private FirebaseAuth mAuth;
+
+    private TextInputEditText fullNameEditText, emailEditText, dateEditText, passwordEditText, rePasswordEditText, phoneNumberEditText, socialLinkEditText, salaryEditText, descriptionEditText;
+    private AutoCompleteTextView locationSpinner, genderSpinner, experienceSpinner, kidsAgeSpinner;
+//    private CheckBox babysitterCheckBox;
+//    private LinearLayout babysitterForm;
+    private Button updateButton, cancelButton;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,11 +96,11 @@ public class FragmentProfile extends Fragment {
         mAuth = FirebaseAuth.getInstance();
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 //
 //        // Define all fields
 //        MainActivity mainActivity = (MainActivity) getActivity();
@@ -271,6 +310,97 @@ public class FragmentProfile extends Fragment {
 //            }
 //        });
 //
-//        return view;
-//    }
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initializeViews(view);
+        loadUserData();
+        setupListeners();
+    }
+
+    private void initializeViews(View view) {
+        fullNameEditText = view.findViewById(R.id.regEditTextFullName);
+        emailEditText = view.findViewById(R.id.regEditTextEmailAddress);
+        dateEditText = view.findViewById(R.id.regEditTextSelectedDate);
+        passwordEditText = view.findViewById(R.id.regPasswordEditText);
+        rePasswordEditText = view.findViewById(R.id.regRePasswordEditText);
+        phoneNumberEditText = view.findViewById(R.id.regPhoneNumberEditText);
+        locationSpinner = view.findViewById(R.id.regLocationSpinner);
+        genderSpinner = view.findViewById(R.id.regGenderSpinner);
+//        babysitterCheckBox = view.findViewById(R.id.regBabysitterCheckBox);
+//        babysitterForm = view.findViewById(R.id.regBabysitterForm);
+        socialLinkEditText = view.findViewById(R.id.regEditTextSocialLink);
+        salaryEditText = view.findViewById(R.id.regEditTextSalary);
+        descriptionEditText = view.findViewById(R.id.regEditTextDescription);
+        experienceSpinner = view.findViewById(R.id.regSpinnerExperience);
+        kidsAgeSpinner = view.findViewById(R.id.regSpinnerKidsAge);
+        updateButton = view.findViewById(R.id.updateButton);
+        cancelButton = view.findViewById(R.id.cancelButton);
+    }
+
+    private void loadUserData() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Reference to the user's data in Firebase
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Assuming user data has a specific structure. Adjust according to your database structure.
+                        String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                        String email = dataSnapshot.child("email").getValue(String.class);
+                        String birthDate = dataSnapshot.child("birthDate").getValue(String.class);
+                        String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                        String location = dataSnapshot.child("location").getValue(String.class);
+
+                        fullNameEditText.setText(fullName);
+                        emailEditText.setText(email);
+                        dateEditText.setText(birthDate);
+                        phoneNumberEditText.setText(phoneNumber);
+                        locationSpinner.setText(location);
+
+                        User.WhoAmI isBabysitter = dataSnapshot.child("whoAmI").getValue(User.WhoAmI.class);
+                        //babysitterCheckBox.setChecked(isBabysitter);
+//                        babysitterForm.setVisibility(isBabysitter ? View.VISIBLE : View.GONE);
+
+                        if (isBabysitter == User.WhoAmI.BABYSITTER) {
+                            String experience = dataSnapshot.child("experience").getValue(String.class);
+                            String kidsAgeRange = dataSnapshot.child("kidsAgeRange").getValue(String.class);
+                            String socialLink = dataSnapshot.child("socialLink").getValue(String.class);
+                            Double salary = dataSnapshot.child("salary").getValue(Double.class);
+                            String description = dataSnapshot.child("description").getValue(String.class);
+
+                            experienceSpinner.setText(experience);
+                            kidsAgeSpinner.setText(kidsAgeRange);
+                            socialLinkEditText.setText(socialLink);
+                            salaryEditText.setText(salary != null ? String.valueOf(salary) : null);
+                            descriptionEditText.setText(description);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(getContext(), "Failed to load user data: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            Toast.makeText(getContext(), "No user logged in.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void setupListeners() {
+        updateButton.setOnClickListener(v -> updateUserProfile());
+        cancelButton.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_fragmentProfile_to_fragmentMain));
+    }
+
+    private void updateUserProfile() {
+        // Implement update logic
+        // Validate data, then push to Firebase
+    }
 }
