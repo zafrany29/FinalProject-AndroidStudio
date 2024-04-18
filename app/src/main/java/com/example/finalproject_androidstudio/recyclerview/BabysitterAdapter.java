@@ -72,7 +72,7 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Babysitter babysitter = babysitterList.get(position);
         holder.fullNameTextView.setText(babysitter.getFullName());
-        holder.kidsAgeRangeAndAgeTextView.setText( "ילדים בגיל:"+ babysitter.getKidsAgeRange()+","+babysitter.getLocation());
+        holder.kidsAgeRangeAndAgeTextView.setText( "ילדים בגיל: "+ babysitter.getKidsAgeRange()+", "+babysitter.getLocation());
         holder.ratingBar.setRating((float) babysitter.getRating());
         Picasso.get().load(babysitter.getProfilePhotoUrl()).into(holder.photoImageView);
 
