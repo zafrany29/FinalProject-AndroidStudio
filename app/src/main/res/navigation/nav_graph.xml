@@ -16,7 +16,7 @@
             app:destination="@id/fragmentMain" />
         <action
             android:id="@+id/action_fragmentLogin_to_fragmentAdmin"
-            app:destination="@+id/fragmentAdmin" />
+            app:destination="@id/fragmentAdmin2" />
     </fragment>
     <fragment
         android:id="@+id/fragmentRegister"
@@ -48,4 +48,9 @@
             android:id="@+id/action_fragmentProfile_to_fragmentMain"
             app:destination="@id/fragmentMain" />
     </fragment>
+    <fragment
+        android:id="@+id/fragmentAdmin2"
+        android:name="com.example.finalproject_androidstudio.fragments.FragmentAdmin"
+        android:label="fragment_admin"
+        tools:layout="@layout/fragment_admin" />
 </navigation>

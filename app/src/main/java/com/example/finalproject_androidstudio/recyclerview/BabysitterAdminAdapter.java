@@ -18,6 +18,7 @@ import com.example.finalproject_androidstudio.fragments.BabysitterDetailDialogFr
 import com.squareup.picasso.Picasso;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdminAdapter.BabysitterViewHolder> {
@@ -54,6 +55,18 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
     public int getItemCount() {
         return babysitterList.size();
     }
+
+    public void filter(String text, List<Babysitter> originalList) {
+        List<Babysitter> filteredList = new ArrayList<>();
+        for (Babysitter item : originalList) {
+            if (item.getFullName().toLowerCase().contains(text.toLowerCase()) || item.getEmail().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(item);
+            }
+        }
+        babysitterList = filteredList;
+        notifyDataSetChanged();
+    }
+
 
     public static class BabysitterViewHolder extends RecyclerView.ViewHolder {
         private ImageView babysitterImageView;

@@ -45,8 +45,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -451,33 +454,33 @@ public class FragmentRegister extends Fragment {
 
 
     private void uploadUserDataToRealtimeDatabase(Object userData) {
-        // Push user data to "users" node in the database
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        String userId = usersRef.push().getKey();
-        if (userId != null) {
-            registrationProgressBar.setVisibility(View.VISIBLE);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
-            usersRef.child(userId).setValue(userData)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_LONG).show();
+//            registrationProgressBar.setVisibility(View.VISIBLE); // Ensure this is called on the UI thread and the element is not null
 
-                            // Upload images and save URLs
-                            uploadImage(profilePhoto, "profile", userId);
-                            uploadImage(idPhoto, "ID", userId);
+            userRef.setValue(userData)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_LONG).show();
 
-                            Navigation.findNavController(requireView()).navigate(R.id.action_fragmentRegister_to_fragmentMain);
-                        }
+                        // Upload images and save URLs
+                        uploadImage(profilePhoto, "profile", userId);
+                        uploadImage(idPhoto, "ID", userId);
+
+                        Navigation.findNavController(requireView()).navigate(R.id.action_fragmentRegister_to_fragmentMain);
+//                        registrationProgressBar.setVisibility(View.INVISIBLE); // Hide progress bar on success
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "Failed to register user", Toast.LENGTH_LONG).show();
-                        }
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to register user: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//                        registrationProgressBar.setVisibility(View.INVISIBLE); // Hide progress bar on failure
                     });
+        } else {
+            Toast.makeText(getContext(), "No authenticated user available.", Toast.LENGTH_LONG).show();
         }
-        registrationProgressBar.setVisibility(View.INVISIBLE);
     }
+
+
 
 }

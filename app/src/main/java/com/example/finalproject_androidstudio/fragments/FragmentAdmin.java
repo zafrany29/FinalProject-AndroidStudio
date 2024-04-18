@@ -27,13 +27,14 @@ public class FragmentAdmin extends Fragment {
 
     RecyclerView adminRecycler;
     private BabysitterAdminAdapter adapter;
-    private List<Babysitter> babysitters;
+    private List<Babysitter> babysittersList;
     private List<String> babysitterIds;  // To store the Firebase UIDs
 
     private Handler handler;
     private static final long UPDATE_INTERVAL = 60000 * 10; // 10 minute in milliseconds
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    androidx.appcompat.widget.SearchView searchView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,22 +45,18 @@ public class FragmentAdmin extends Fragment {
         adminRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Initialize the lists
-        babysitters = new ArrayList<>();
+        babysittersList = new ArrayList<>();
         babysitterIds = new ArrayList<>();
 
-        adapter = new BabysitterAdminAdapter(getContext(), babysitters, babysitterIds);
+        adapter = new BabysitterAdminAdapter(getContext(), babysittersList, babysitterIds);
         adminRecycler.setAdapter(adapter);
 
         // Initialize the handler
         handler = new Handler(Looper.getMainLooper());
 
-        // Setup the SwipeRefreshLayout
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                retrieveBabysitters(); // Refresh the list when swiped
-            }
-        });
+        searchView = view.findViewById(R.id.admin_search_view);
+
+
 
         // Retrieve and display babysitters initially
         retrieveBabysitters();
@@ -68,6 +65,29 @@ public class FragmentAdmin extends Fragment {
         startPeriodicUpdates();
 
         return view;
+    }
+
+    private void setListeners(){
+        // Setup the SwipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                retrieveBabysitters(); // Refresh the list when swiped
+            }
+        });
+
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;  // No action on submit
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText, babysittersList);  // Filter as the user types
+                return true;
+            }
+        });
     }
 
     private void startPeriodicUpdates() {
@@ -87,12 +107,12 @@ public class FragmentAdmin extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                babysitters.clear();  // Clear the current list
+                babysittersList.clear();  // Clear the current list
                 babysitterIds.clear();  // Clear the UID list
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Babysitter babysitter = snapshot.getValue(Babysitter.class);
                     if (babysitter != null && !babysitter.isVerified()) {
-                        babysitters.add(babysitter);
+                        babysittersList.add(babysitter);
                         babysitterIds.add(snapshot.getKey());  // Store the Firebase UID
                     }
                 }

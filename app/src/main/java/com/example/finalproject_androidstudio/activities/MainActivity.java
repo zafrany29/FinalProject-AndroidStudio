@@ -6,20 +6,6 @@ import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static MyUser user;
-    private Babysitter babysitter;
-
-    public static MyUser getUser() {
-        return user;
-    }
-
-    public static void setUser(MyUser user) {
-        MainActivity.user = user;
-    }
-    public void setBabysitter(Babysitter babysitter) {
-        this.babysitter = babysitter;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

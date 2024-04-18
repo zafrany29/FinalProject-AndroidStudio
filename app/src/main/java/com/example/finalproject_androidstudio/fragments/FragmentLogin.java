@@ -36,7 +36,12 @@ public class FragmentLogin extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signOut(); // Ensure to sign out potentially cached users on app start
+//        mAuth.signOut(); // Ensure to sign out potentially cached users on app start
+
+        if (mAuth.getCurrentUser() != null) {
+            // User is signed in, check user type and navigate
+            checkUserTypeAndNavigate();
+        }
     }
 
     @Override
@@ -49,14 +54,7 @@ public class FragmentLogin extends Fragment {
         TextInputEditText passwordEditText = view.findViewById(R.id.passwordEditText);
 
         regButton.setOnClickListener(v -> {
-            String emailStr = emailEditText.getText().toString().trim();
-            String passStr = passwordEditText.getText().toString().trim();
-
-            Bundle bundle = new Bundle();
-            bundle.putString("emailText", emailStr);
-            bundle.putString("passText", passStr);
-
-            Navigation.findNavController(v).navigate(R.id.action_fragmentLogin_to_fragmentRegister, bundle);
+            Navigation.findNavController(v).navigate(R.id.action_fragmentLogin_to_fragmentRegister);
         });
 
         loginButton.setOnClickListener(v -> {
@@ -71,7 +69,6 @@ public class FragmentLogin extends Fragment {
                             if (task.isSuccessful()) {
                                 checkUserTypeAndNavigate();
                             } else {
-                                passwordEditText.setText("");
                                 Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_LONG).show();
                             }
                         });
@@ -98,18 +95,21 @@ public class FragmentLogin extends Fragment {
                             Navigation.findNavController(getView()).navigate(R.id.action_fragmentLogin_to_fragmentMain);
                         }
                     } else {
-                        // No UID found, fallback to email search
-                        queryUserByEmail(currentUser.getEmail(), usersRef);
+                        Toast.makeText(getActivity(), "Failed to read user data. DataSnapshot does not exist.", Toast.LENGTH_LONG).show();
+//                        Log.d("FirebaseData", "DataSnapshot: " + dataSnapshot.getKey() + " does not exist.");
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(getActivity(), "Failed to read user data.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
+        } else {
+            Toast.makeText(getActivity(), "No current user found.", Toast.LENGTH_LONG).show();
         }
     }
+
 
     private void queryUserByEmail(String email, DatabaseReference usersRef) {
         Query emailQuery = usersRef.orderByChild("email").equalTo(email);
