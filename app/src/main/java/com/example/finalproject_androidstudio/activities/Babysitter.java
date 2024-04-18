@@ -4,7 +4,7 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.util.List;
 
-public class Babysitter extends User {
+public class Babysitter extends MyUser {
     @PropertyName("id_photo_url")
     private String idPhotoUrl;
     @PropertyName("profile_photo_url")
@@ -15,13 +15,13 @@ public class Babysitter extends User {
     private String experience;
     @PropertyName("speciality")
     private String speciality;
-    @PropertyName("kidsAgeRange")
+    @PropertyName("kids_age_range")
     private String kidsAgeRange;
     @PropertyName("salary")
     private double salary;
     @PropertyName("rating")
     private double rating;
-    @PropertyName("isVerified")
+    @PropertyName("is_verified")
     private boolean isVerified;
     @PropertyName("description")
     private String description;
@@ -147,4 +147,5 @@ public class Babysitter extends User {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

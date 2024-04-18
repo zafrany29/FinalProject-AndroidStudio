@@ -6,6 +6,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,12 +31,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
+import com.example.finalproject_androidstudio.activities.MainActivity;
 import com.example.finalproject_androidstudio.activities.MyUser;
 import com.example.finalproject_androidstudio.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,20 +47,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.auth.User;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.UUID;
 
 public class FragmentRegister extends Fragment {
 
-    private FirebaseAuth mAuth;
-    private EditText editTextEmail, editTextPassword;
-    private CheckBox regBabysitterCheckBox;
-    private LinearLayout regBabysitterForm;
-    private Button registerButton;
-    private Button returnButton;
+
     private View rootView;
     private Button registerBtn;
     private Button returnBtn;
@@ -86,6 +85,9 @@ public class FragmentRegister extends Fragment {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private StorageReference mStorageRef;
+
+    private Uri profilePhoto;
+    private Uri idPhoto;
 
     PhotoType photoType;
     public enum PhotoType {
@@ -122,33 +124,9 @@ public class FragmentRegister extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private void initListeners(){
 
-        mAuth = FirebaseAuth.getInstance();
-        rootView = view;
-
-        editTextEmail = view.findViewById(R.id.regEditTextEmailAddress);
-        editTextPassword = view.findViewById(R.id.regPasswordEditText);
-        regBabysitterCheckBox = view.findViewById(R.id.regBabysitterCheckBox);
-        regBabysitterForm = view.findViewById(R.id.regBabysitterForm);
-        registerButton = view.findViewById(R.id.register_btn);
-        returnButton = view.findViewById(R.id.return_btn);
-
-        initPhotoButtons(view);
-        initSpinners(view);
-
-        regBabysitterCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                regBabysitterForm.setVisibility(View.VISIBLE);
-            } else {
-                regBabysitterForm.setVisibility(View.GONE);
-            }
-        });
-
-        // Set click listeners
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        regUploadPhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 photoType = PhotoType.PROFILE_PHOTO;
@@ -163,13 +141,6 @@ public class FragmentRegister extends Fragment {
                 showImageSourceDialog();
             }
         });
-    }
-    private  void initPhotoButtons(View view)
-    {
-        regUploadPhotoButton = view.findViewById(R.id.regUploadPhoto_btn);
-        regUploadIDPhotoButton = view.findViewById(R.id.regUploadIDPhoto_btn);
-        regBbsPhoto = rootView.findViewById(R.id.regBbsPhoto);
-        regBbsIDPhoto = rootView.findViewById(R.id.regBbsIDPhoto);
 
         regBabysitterCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -268,7 +239,7 @@ public class FragmentRegister extends Fragment {
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         } else {
-            Toast.makeText(getContext(), "No camera app found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No camera app found", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -300,13 +271,15 @@ public class FragmentRegister extends Fragment {
             switch (photoType) {
                 case PROFILE_PHOTO:
                     regBbsPhoto.setImageURI(imageUri);
+                    profilePhoto = imageUri;
                     break;
                 case ID_PHOTO:
                     regBbsIDPhoto.setImageURI(imageUri);
+                    idPhoto = imageUri;
                     break;
             }
         } else {
-            Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_LONG).show();
         }
         photoType = null;
     }
@@ -338,28 +311,47 @@ public class FragmentRegister extends Fragment {
 
         // Validate the data
         if (TextUtils.isEmpty(fullName)) {
-            Toast.makeText(getContext(), "Please enter your full name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter your full name", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(getContext(), "Please enter your email address", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter your email address", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getContext(), "Please enter a password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter a password", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (password.length() < 6) {
-            Toast.makeText(getContext(), "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Password must be at least 6 characters long", Toast.LENGTH_LONG).show();
             return null;
         }
 
         if (!TextUtils.equals(password, reEnteredPassword)) {
-            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_LONG).show();
             return null;
+        }
+        if(salary == null || salary.isEmpty())
+        {
+            try {
+                double parsedSalary = Double.parseDouble(salary);
+                // If parsing successful, do something
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_LONG).show();
+            }
+            Toast.makeText(getContext(), "Please enter Salary", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        if(profilePhotoUrl == null || profilePhotoUrl.toString().isEmpty())
+        {
+            Toast.makeText(getContext(), "Please Select Profile Photo", Toast.LENGTH_LONG).show();
+        }
+        if(idPhoto == null || idPhoto.toString().isEmpty())
+        {
+            Toast.makeText(getContext(), "Please Select ID Photo", Toast.LENGTH_LONG).show();
         }
 
         if (isBabysitter) {
@@ -384,48 +376,6 @@ public class FragmentRegister extends Fragment {
             return null;
         }
     }
-    private Babysitter populateBabysitterFrom() {
-        // Get references to all the form fields
-        EditText fullNameEditText = rootView.findViewById(R.id.regEditTextFullName);
-        EditText emailEditText = rootView.findViewById(R.id.regEditTextEmailAddress);
-        EditText phoneNumberEditText = rootView.findViewById(R.id.regPhoneNumberEditText);
-        EditText locationEditText = rootView.findViewById(R.id.regLocationSpinner);
-        EditText descriptionEditText = rootView.findViewById(R.id.regEditTextDescription);
-        EditText selectedDateEditText = rootView.findViewById(R.id.regEditTextSelectedDate);
-        EditText socialLinkEditText = rootView.findViewById(R.id.regEditTextSocialLink);
-        EditText experienceEditText = rootView.findViewById(R.id.regSpinnerExperience);
-        EditText kidsAgeEditText = rootView.findViewById(R.id.regSpinnerKidsAge);
-        EditText salaryEditText = rootView.findViewById(R.id.regEditTextSalary);
-
-        // Get the text from all the form fields
-        String fullName = fullNameEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
-        String phoneNumber = phoneNumberEditText.getText().toString().trim();
-        String location = locationEditText.getText().toString().trim();
-        String description = descriptionEditText.getText().toString().trim();
-        String selectedDate = selectedDateEditText.getText().toString().trim();
-        String socialLink = socialLinkEditText.getText().toString().trim();
-        int experience = Integer.parseInt(experienceEditText.getText().toString().trim());
-        String kidsAge = kidsAgeEditText.getText().toString().trim();
-        double salary = Double.parseDouble(salaryEditText.getText().toString().trim());
-
-        // Create a List<String> to hold the calendar data (assuming you have a way to get it)
-        List<String> calendar = new ArrayList<>(); // Populate this list with calendar data
-
-        // Create a Babysitter object and populate it with the retrieved data
-        Babysitter babysitter = new Babysitter();
-        babysitter.setFullName(fullName);
-        babysitter.setEmail(email);
-        babysitter.setPhoneNumber(phoneNumber);
-        babysitter.setLocation(location);
-        babysitter.setDescription(description);
-        babysitter.setCalendar(calendar);
-        babysitter.setSocialLink(socialLink);
-        babysitter.setExperience(experience);
-        babysitter.setKidsAgeRange(kidsAge);
-        babysitter.setSalary(salary);
-
-        // Set other specific fields of Babysitter here
 
     private String bitmapToString(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -438,6 +388,7 @@ public class FragmentRegister extends Fragment {
         Object newUser = validateUserForm();
         String email = regTextEmailAddress.getText().toString().trim();
         String password = regTextPassword.getText().toString().trim();
+
         if (newUser != null) {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
@@ -451,41 +402,82 @@ public class FragmentRegister extends Fragment {
                                 if (user != null) {
                                     uploadUserDataToRealtimeDatabase(newUser);
                                 } else {
-                                    Toast.makeText(getContext(), "Failed to get user information", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Failed to get user information", Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(getContext(), "Authentication failed: " + task.getException().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
                     });
         }
     }
 
+    private void uploadImage(Uri imageUri, String imageName, String userId) {
+        if (imageUri == null) {
+            Toast.makeText(getContext(), "Image Uri is null, can't upload", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final StorageReference ref = mStorageRef.child("images/" + UUID.randomUUID().toString() + "_" + imageName);
+        UploadTask uploadTask = ref.putFile(imageUri);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String photoUrl = uri.toString();
+                        // Save photo URL depending on the type of the image
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                        if (imageName.equals("profile")) {
+                            userRef.child("profilePhotoUrl").setValue(photoUrl);
+                        } else {
+                            userRef.child("idPhotoUrl").setValue(photoUrl);
+                        }
+                        Toast.makeText(getContext(), "Image uploaded successfully: " + photoUrl, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
     private void uploadUserDataToRealtimeDatabase(Object userData) {
         // Push user data to "users" node in the database
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
         String userId = usersRef.push().getKey();
         if (userId != null) {
-
             registrationProgressBar.setVisibility(View.VISIBLE);
-
 
             usersRef.child(userId).setValue(userData)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_LONG).show();
+
+                            // Upload images and save URLs
+                            uploadImage(profilePhoto, "profile", userId);
+                            uploadImage(idPhoto, "ID", userId);
+
+                            Navigation.findNavController(requireView()).navigate(R.id.action_fragmentRegister_to_fragmentMain);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "Failed to register user", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Failed to register user", Toast.LENGTH_LONG).show();
                         }
                     });
         }
         registrationProgressBar.setVisibility(View.INVISIBLE);
     }
+
 }
