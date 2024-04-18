@@ -16,7 +16,7 @@
             app:destination="@id/fragmentMain" />
         <action
             android:id="@+id/action_fragmentLogin_to_fragmentAdmin"
-            app:destination="@id/fragmentAdmin" />
+            app:destination="@id/FragmentAdmin" />
     </fragment>
     <fragment
         android:id="@+id/fragmentRegister"
@@ -33,20 +33,15 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_fragmentMain_to_fragmentProfile"
-            app:destination="@id/fragmentProfile" />
-        <action
             android:id="@+id/action_fragmentMain_to_fragmentLogin"
             app:destination="@id/fragmentLogin" />
+        <action
+            android:id="@+id/action_fragmentMain_to_fragmentProfile"
+            app:destination="@id/fragmentProfile" />
     </fragment>
     <fragment
         android:id="@+id/fragmentProfile"
         android:name="com.example.finalproject_androidstudio.fragments.FragmentProfile"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
-    <fragment
-        android:id="@+id/fragmentAdmin"
-        android:name="com.example.finalproject_androidstudio.fragments.FragmentAdmin"
-        android:label="fragment_admin"
-        tools:layout="@layout/fragment_admin" />
 </navigation>

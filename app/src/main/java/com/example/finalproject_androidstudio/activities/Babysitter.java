@@ -21,7 +21,9 @@ public class Babysitter extends MyUser {
     private double salary;
     @PropertyName("rating")
     private double rating;
-    @PropertyName("is_verified")
+    @PropertyName("ratingCount")
+    private int ratingCount;
+    @PropertyName("isVerified")
     private boolean isVerified;
     @PropertyName("description")
     private String description;
@@ -128,12 +130,22 @@ public class Babysitter extends MyUser {
         this.rating = rating;
     }
 
-    @PropertyName("is_verified")
+    @PropertyName("ratingCount")
+    public int getRatingCount() {
+        return ratingCount;
+    }
+
+    @PropertyName("ratingCount")
+    public void setRatingCount(int ratingCount) {
+        this.ratingCount = ratingCount;
+    }
+
+    @PropertyName("isVerified")
     public boolean isVerified() {
         return isVerified;
     }
 
-    @PropertyName("is_verified")
+    @PropertyName("isVerified")
     public void setVerified(boolean verified) {
         isVerified = verified;
     }
@@ -147,5 +159,4 @@ public class Babysitter extends MyUser {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }
