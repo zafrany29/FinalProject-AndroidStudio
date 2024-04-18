@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
-import com.example.finalproject_androidstudio.activities.User;
+import com.example.finalproject_androidstudio.activities.MyUser;
 import com.example.finalproject_androidstudio.databinding.FragmentMainBinding;
 import com.example.finalproject_androidstudio.recyclerview.BabysitterAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -187,7 +187,7 @@ public class FragmentMain extends Fragment {
                 Map<String, Babysitter> babysitterMap = new HashMap<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Babysitter babysitter = snapshot.getValue(Babysitter.class);
-                    if (babysitter != null && babysitter.getWhoAmI() == User.WhoAmI.BABYSITTER && babysitter.isVerified()) {
+                    if (babysitter != null && babysitter.getWhoAmI() == MyUser.WhoAmI.BABYSITTER && babysitter.isVerified()) {
                         if (locationFilter.isEmpty() || locationFilter.equals("All Locations") || babysitter.getLocation().equalsIgnoreCase(locationFilter)) {
                             babysitterMap.put(babysitter.getEmail(), babysitter); // Use ID as key
                         }

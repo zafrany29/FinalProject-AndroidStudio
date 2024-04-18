@@ -76,11 +76,11 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         holder.ratingBar.setRating((float) babysitter.getRating());
         Picasso.get().load(babysitter.getProfilePhotoUrl()).into(holder.photoImageView);
 
-        if(babysitter.getRatingCount() == 0 && babysitter.getRating() == 0){
-            holder.ratingBar.setVisibility(View.GONE);
-        } else {
-            holder.ratingBar.setVisibility(View.VISIBLE);
-        }
+//        if(babysitter.getRatingCount() == 0 && babysitter.getRating() == 0){
+//            holder.ratingBar.setVisibility(View.GONE);
+//        } else {
+//            holder.ratingBar.setVisibility(View.VISIBLE);
+//        }
 
         holder.itemView.setOnClickListener(v -> {
             showDialog(babysitter, v.getContext()); // Show dialog on item click
@@ -153,18 +153,18 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         ref.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Babysitter b = mutableData.getValue(Babysitter.class);
-                if (b == null) {
+//                Babysitter b = mutableData.getValue(Babysitter.class);
+                if (babysitter == null) {
                     return Transaction.abort();
                 }
 
                 // Update logic...
-                int newReviewCount = b.getRatingCount() + 1;
-                double oldRatingsTotal = b.getRating() * b.getRatingCount();
+                int newReviewCount = babysitter.getRatingCount() + 1;
+                double oldRatingsTotal = babysitter.getRating() * babysitter.getRatingCount();
                 double newAverageRating = (oldRatingsTotal + newRating) / newReviewCount;
-                b.setRating(newAverageRating);
-                b.setRatingCount(newReviewCount);
-                mutableData.setValue(b);
+                babysitter.setRating(newAverageRating);
+                babysitter.setRatingCount(newReviewCount);
+                mutableData.setValue(babysitter);
                 return Transaction.success(mutableData);
             }
 

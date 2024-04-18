@@ -159,7 +159,7 @@ public class FragmentRegister extends Fragment {
     }
 
     private void initViews() {
-        registerBtn = rootView.findViewById(R.id.register_btn);
+        registerBtn = rootView.findViewById(R.id.register_btnn);
         returnBtn = rootView.findViewById(R.id.return_btn);
         regTextFullName = rootView.findViewById(R.id.regEditTextFullName);
         regTextEmailAddress = rootView.findViewById(R.id.regEditTextEmailAddress);
@@ -176,7 +176,7 @@ public class FragmentRegister extends Fragment {
         regEditTextDescription = rootView.findViewById(R.id.regEditTextDescription);
         regBabysitterCheckBox = rootView.findViewById(R.id.regBabysitterCheckBox);
         regBabysitterForm = rootView.findViewById(R.id.regBabysitterForm);
-        registrationProgressBar = rootView.findViewById(R.id.registration_progress_bar);
+        registrationProgressBar = rootView.findViewById(R.id.reg_progress_bar);
 
         regUploadPhotoBtn = rootView.findViewById(R.id.regUploadPhoto_btn);
         regUploadIDPhotoBtn = rootView.findViewById(R.id.regUploadIDPhoto_btn);

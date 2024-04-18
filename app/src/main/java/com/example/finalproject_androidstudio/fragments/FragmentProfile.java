@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.MainActivity;
-import com.example.finalproject_androidstudio.activities.User;
+import com.example.finalproject_androidstudio.activities.MyUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -364,11 +364,11 @@ public class FragmentProfile extends Fragment {
                         phoneNumberEditText.setText(phoneNumber);
                         locationSpinner.setText(location);
 
-                        User.WhoAmI isBabysitter = dataSnapshot.child("whoAmI").getValue(User.WhoAmI.class);
+                        MyUser.WhoAmI isBabysitter = dataSnapshot.child("whoAmI").getValue(MyUser.WhoAmI.class);
                         //babysitterCheckBox.setChecked(isBabysitter);
 //                        babysitterForm.setVisibility(isBabysitter ? View.VISIBLE : View.GONE);
 
-                        if (isBabysitter == User.WhoAmI.BABYSITTER) {
+                        if (isBabysitter == MyUser.WhoAmI.BABYSITTER) {
                             String experience = dataSnapshot.child("experience").getValue(String.class);
                             String kidsAgeRange = dataSnapshot.child("kidsAgeRange").getValue(String.class);
                             String socialLink = dataSnapshot.child("socialLink").getValue(String.class);
