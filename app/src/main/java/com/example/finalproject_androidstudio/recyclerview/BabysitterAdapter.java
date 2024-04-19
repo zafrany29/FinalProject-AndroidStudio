@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -125,10 +127,17 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         ImageView imageView = dialogView.findViewById(R.id.imageViewDialog);
         RatingBar ratingBar = dialogView.findViewById(R.id.ratingBarDialog);
         Button rateButton = dialogView.findViewById(R.id.buttonRate);
+        ScrollView scrollView = dialogView.findViewById(R.id.scrollView);
+        TextView scroll = dialogView.findViewById(R.id.scrolling_textview);
         Button closeButton = dialogView.findViewById(R.id.buttonClose);
 
         textViewFullName.setText(babysitter.getFullName());
-        textViewDetails.setText("Age Range: " + babysitter.getKidsAgeRange() + ", Location: " + babysitter.getLocation());
+        textViewDetails.setText("Age: " + babysitter.getAge() + ", Location: " + babysitter.getLocation());
+        scroll.setText("about me " + babysitter.getDescription()+ "\n" + "Years of Eperiance: "+babysitter.getExperience()+"\n" +
+                "Salary expectation: " +babysitter.getSalary()+"NIS/h" + "\n"+"Phone for Contact: "+ babysitter.getPhoneNumber() + "\n" + "Kids Prefered Age Range: " + babysitter.getKidsAgeRange() );
+        scrollView.scrollTo(0, 0);
+
+
         Picasso.get().load(babysitter.getProfilePhotoUrl()).into(imageView);
 
         AlertDialog dialog = builder.create();
