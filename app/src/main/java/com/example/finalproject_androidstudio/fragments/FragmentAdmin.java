@@ -5,12 +5,14 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.finalproject_androidstudio.R;
@@ -29,7 +31,8 @@ import java.util.List;
 
 public class FragmentAdmin extends Fragment {
 
-    RecyclerView adminRecycler;
+    private RecyclerView adminRecycler;
+    private Button logout_btn;
     private BabysitterAdminAdapter adapter;
     private List<Babysitter> babysittersList;
     private List<String> babysitterIds;
@@ -48,6 +51,7 @@ public class FragmentAdmin extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getContext());
         adminRecycler.setLayoutManager(linearLayoutManager);
         progressBar = view.findViewById(R.id.admin_page_progressbar);
+        logout_btn = view.findViewById(R.id.admin_page_logout);
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -72,6 +76,15 @@ public class FragmentAdmin extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 swipeRefreshLayout.setEnabled(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0); // Enable refresh only when the first item is completely visible (i.e., at the top)
+            }
+        });
+
+        logout_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Sign out the current user
+                mAuth.signOut();
+                Navigation.findNavController(v).navigate(R.id.action_fragmentAdmin_to_fragmentLogin);
             }
         });
     }

@@ -60,7 +60,6 @@ import java.util.UUID;
 
 public class FragmentRegister extends Fragment {
 
-
     private View rootView;
     private Button registerBtn;
     private Button regUploadPhotoBtn;
@@ -82,26 +81,19 @@ public class FragmentRegister extends Fragment {
     private EditText regEditTextDescription;
     private CheckBox regBabysitterCheckBox;
     private LinearLayout regBabysitterForm;
-    private ProgressBar registrationProgressBar;
-
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
     private StorageReference mStorageRef;
-
     private Uri profilePhoto;
     private Uri idPhoto;
-
-    PhotoType photoType;
+    private PhotoType photoType;
+    private boolean isBabysitter;
     public enum PhotoType {
         PROFILE_PHOTO,
         ID_PHOTO
     }
-
-
     private static final int GALLERY_REQUEST_CODE = 1001;
     private static final int CAMERA_REQUEST_CODE = 1002;
 
-    ActivityMainBinding activityMainBinding;
     public FragmentRegister() {
     }
 
@@ -112,7 +104,6 @@ public class FragmentRegister extends Fragment {
 
         // Initialize Firebase components
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         initViews();
@@ -147,7 +138,7 @@ public class FragmentRegister extends Fragment {
         regBabysitterCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Toggle visibility of the babysitter form based on checkbox state
+                // Toggle visibility of the babysitter form
                 regBabysitterForm.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
@@ -177,7 +168,6 @@ public class FragmentRegister extends Fragment {
         regEditTextDescription = rootView.findViewById(R.id.regEditTextDescription);
         regBabysitterCheckBox = rootView.findViewById(R.id.regBabysitterCheckBox);
         regBabysitterForm = rootView.findViewById(R.id.regBabysitterForm);
-        registrationProgressBar = rootView.findViewById(R.id.reg_progress_bar);
 
         regUploadPhotoBtn = rootView.findViewById(R.id.regUploadPhoto_btn);
         regUploadIDPhotoBtn = rootView.findViewById(R.id.regUploadIDPhoto_btn);
@@ -186,25 +176,25 @@ public class FragmentRegister extends Fragment {
     }
 
     private void initSpinners() {
-        // Populate gender spinner
+        // gender spinner
         ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.gender_array, android.R.layout.simple_spinner_item);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         regGender.setAdapter(genderAdapter);
 
-        // Populate location spinner
+        // location spinner
         ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.location_array, android.R.layout.simple_spinner_item);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         regLocation.setAdapter(locationAdapter);
 
-        // Populate kids age spinner
+        // kids age spinner
         ArrayAdapter<CharSequence> ageAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.ageRange, android.R.layout.simple_spinner_item);
         ageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         regSpinnerKidsAge.setAdapter(ageAdapter);
 
-        // Populate experience spinner
+        // experience spinner
         ArrayAdapter<CharSequence> experienceAdapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.experience, android.R.layout.simple_spinner_item);
         experienceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -293,10 +283,8 @@ public class FragmentRegister extends Fragment {
         String email = regTextEmailAddress.getText().toString().trim();
         String password = regTextPassword.getText().toString().trim();
         String reEnteredPassword = regTextRePassword.getText().toString().trim();
-        String selectedDate = regTextSelectedDate.getText().toString().trim();
         String phoneNumber = regPhoneNumber.getText().toString().trim();
         String location = regLocation.getText().toString().trim();
-        String gender = regGender.getText().toString().trim();
         String experience = regSpinnerExperience.getText().toString().trim();
         String kidsAgeRange = regSpinnerKidsAge.getText().toString().trim();
         String socialLink = regEditTextSocialLink.getText().toString().trim();
@@ -304,7 +292,7 @@ public class FragmentRegister extends Fragment {
         String description = regEditTextDescription.getText().toString().trim();
 
         // Check if the checkbox is checked to determine user type
-        boolean isBabysitter = regBabysitterCheckBox.isChecked();
+        isBabysitter = regBabysitterCheckBox.isChecked();
 
         // Get image URLs as strings
         String profilePhotoUrl = getImageUrlFromImageView(regBbsPhoto);
@@ -341,7 +329,6 @@ public class FragmentRegister extends Fragment {
             {
                 try {
                     double parsedSalary = Double.parseDouble(salary);
-                    // If parsing successful, do something
                 } catch (NumberFormatException e) {
                     Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_LONG).show();
                 }
@@ -368,15 +355,17 @@ public class FragmentRegister extends Fragment {
             return new MyUser(fullName, email, phoneNumber, location, null, MyUser.WhoAmI.USER);
         }
     }
+
     private String getImageUrlFromImageView(ImageView imageView) {
         Drawable drawable = imageView.getDrawable();
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             Bitmap bitmap = bitmapDrawable.getBitmap();
+
             // Convert Bitmap to URL string and return
             return bitmapToString(bitmap);
         } else {
-            // Handle other types of Drawables or null case
+
             return null;
         }
     }
@@ -387,6 +376,7 @@ public class FragmentRegister extends Fragment {
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
+
     private void registerUser() {
         // Validate user form data
         Object newUser = validateUserForm();
@@ -452,36 +442,32 @@ public class FragmentRegister extends Fragment {
         });
     }
 
-
-
     private void uploadUserDataToRealtimeDatabase(Object userData) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
-//            registrationProgressBar.setVisibility(View.VISIBLE); // Ensure this is called on the UI thread and the element is not null
-
             userRef.setValue(userData)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(getContext(), "User registered successfully", Toast.LENGTH_LONG).show();
 
-                        // Upload images and save URLs
-                        uploadImage(profilePhoto, "profile", userId);
-                        uploadImage(idPhoto, "ID", userId);
+
+
+                        if(isBabysitter)
+                        {
+                            // Upload images and save URLs for babysitter
+                            uploadImage(profilePhoto, "profile", userId);
+                            uploadImage(idPhoto, "ID", userId);
+                        }
 
                         Navigation.findNavController(requireView()).navigate(R.id.action_fragmentRegister_to_fragmentMain);
-//                        registrationProgressBar.setVisibility(View.INVISIBLE); // Hide progress bar on success
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(), "Failed to register user: " + e.getMessage(), Toast.LENGTH_LONG).show();
-//                        registrationProgressBar.setVisibility(View.INVISIBLE); // Hide progress bar on failure
                     });
         } else {
             Toast.makeText(getContext(), "No authenticated user available.", Toast.LENGTH_LONG).show();
         }
     }
-
-
-
 }

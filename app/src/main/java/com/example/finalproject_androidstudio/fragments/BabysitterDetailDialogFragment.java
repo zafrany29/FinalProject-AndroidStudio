@@ -41,7 +41,7 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
 
     private ImageView profileImageView, idImageView, closeImageView;
     private TextView descriptionTextView;
-    private Button verifyButton, unverifyButton;
+    private Button verifyButton;
     private DatabaseReference databaseReference;
     private GridView detailsGridView;
     private Button downloadButton;
@@ -70,7 +70,6 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
         idImageView = view.findViewById(R.id.admin_page_idPhoto);
         descriptionTextView = view.findViewById(R.id.scrolling_textview_description);
         verifyButton = view.findViewById(R.id.admin_page_verify_btn);
-        unverifyButton = view.findViewById(R.id.admin_page_unverify_btn);
         detailsGridView= view.findViewById(R.id.user_grid_view);
 
         this.babysitterId = getArguments().getString("BABYSITTER_ID", "");
@@ -78,14 +77,10 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
         databaseReference = FirebaseDatabase.getInstance().getReference("babysitters").child(babysitterId);
         closeImageView = view.findViewById(R.id.admin_popup_close_btn);
 
-        // Load babysitter details here
+        // Loads the babysitter details here
         loadBabysitterDetails();
 
         verifyButton.setOnClickListener(v -> updateBabysitterVerification(true));
-        unverifyButton.setOnClickListener(v -> {
-                    updateBabysitterVerification(false);
-                    handleBlacklist(true);
-                });
         closeImageView.setOnClickListener(v -> dismiss());
         downloadButton = view.findViewById(R.id.admin_page_downloadImages_btn);
         downloadButton.setOnClickListener(v -> downloadImages());
@@ -98,7 +93,7 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_WRITE_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                downloadImages(); // Permission was granted, continue with the operation
+                downloadImages();
             } else {
                 Toast.makeText(getContext(), "Permission denied to write to your External storage", Toast.LENGTH_SHORT).show();
             }
@@ -145,7 +140,6 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
     private void updateBabysitterVerification(boolean isVerified) {
         databaseReference.child("verified").setValue(isVerified)
                 .addOnCompleteListener(task -> {
-                    // Check if fragment is still attached to the activity
                     if (isAdded()) {
                         if (task.isSuccessful()) {
                             updateAdminLists(babysitterId, isVerified);
@@ -161,7 +155,6 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
     private void updateAdminLists(String babysitterId, boolean isVerified) {
         DatabaseReference adminRef = FirebaseDatabase.getInstance().getReference("admins").child("YOUR_ADMIN_ID"); // Replace with actual admin ID
 
-        // Fetch current admin
         adminRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -171,31 +164,6 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
                         admin.getVerifiedBabysitters().add(babysitterId);
                     } else {
                         admin.getBlacklistedBabysitters().add(babysitterId);
-                    }
-                    adminRef.setValue(admin); // Update admin in database
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getContext(), "Failed to update admin lists", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    private void handleBlacklist(boolean addToBlacklist) {
-        DatabaseReference adminRef = FirebaseDatabase.getInstance().getReference("users").child(adminId);
-
-        adminRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Admin admin = dataSnapshot.getValue(Admin.class);
-                if (admin != null) {
-                    if (addToBlacklist) {
-                        admin.getVerifiedBabysitters().remove(babysitterId);
-                        admin.getBlacklistedBabysitters().add(babysitterId);
-                    } else {
-                        admin.getBlacklistedBabysitters().remove(babysitterId);
-                        admin.getVerifiedBabysitters().add(babysitterId);
                     }
                     adminRef.setValue(admin);
                 }
@@ -209,8 +177,8 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
     }
 
     private void downloadImages() {
-        // Assuming 'profileImageView' and 'idImageView' have URLs to the images
-        String profileImageUrl = currentBabysitter.getProfilePhotoUrl(); // Retrieve the URL
+        // Gets the URL`s of profile and id photo`s
+        String profileImageUrl = currentBabysitter.getProfilePhotoUrl();
         String idImageUrl = currentBabysitter.getIdPhotoUrl();
 
         downloadImage(profileImageUrl, "profile_image.jpg");
@@ -219,13 +187,14 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
 
     private void downloadImage(String imageUrl, String fileName) {
         if (imageUrl != null && !imageUrl.isEmpty()) {
+
             // Create DownloadManager Request
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(imageUrl))
-                    .setTitle("Downloading " + fileName)  // Title of the Download Notification
-                    .setDescription("Downloading " + fileName)  // Description of the Download Notification
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)  // Visibility of the download Notification
-                    .setAllowedOverMetered(true)  // Set if download is allowed on Mobile network
-                    .setAllowedOverRoaming(true);  // Set if download is allowed on roaming network
+                    .setTitle("Downloading " + fileName)
+                    .setDescription("Downloading " + fileName)
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setAllowedOverMetered(true)
+                    .setAllowedOverRoaming(true);
 
             // Set the local destination for the downloaded file to a path within the application's external files directory
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -237,6 +206,8 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
 
             DownloadManager downloadManager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
             downloadManager.enqueue(request);
+
+            Toast.makeText(getContext(), "Downloading image:" + fileName, Toast.LENGTH_SHORT).show();
         }
     }
 

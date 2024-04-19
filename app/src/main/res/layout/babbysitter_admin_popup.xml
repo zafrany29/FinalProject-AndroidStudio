@@ -102,9 +102,10 @@
 
             <Button
                 android:id="@+id/admin_page_downloadImages_btn"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dwonload User Images"/>
+                android:text="Dwonload User Images"
+                android:layout_centerHorizontal="true"/>
 
             <Button
                 android:id="@+id/admin_page_verify_btn"
@@ -112,19 +113,10 @@
                 android:layout_height="wrap_content"
                 android:text="Verify"
                 android:layout_below="@id/admin_page_downloadImages_btn"
-                android:layout_alignStart="@id/admin_page_downloadImages_btn"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"/>
 
-            <Button
-                android:id="@+id/admin_page_unverify_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Unverify"
-                android:layout_alignEnd="@id/admin_page_downloadImages_btn"
-                android:layout_alignTop="@id/admin_page_verify_btn"
-                android:layout_marginStart="10dp"/>
 
         </RelativeLayout>
 
