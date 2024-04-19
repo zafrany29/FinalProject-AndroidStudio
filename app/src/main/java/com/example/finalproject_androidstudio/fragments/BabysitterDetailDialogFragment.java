@@ -48,6 +48,7 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
     private String babysitterId;
     private Babysitter currentBabysitter;
 
+    private String adminId;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 
 
@@ -55,6 +56,7 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
         BabysitterDetailDialogFragment fragment = new BabysitterDetailDialogFragment();
         Bundle args = new Bundle();
         args.putString("BABYSITTER_ID", babysitterId);
+        args.putString("ADMIN_ID", adminId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,6 +74,7 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
         detailsGridView= view.findViewById(R.id.user_grid_view);
 
         this.babysitterId = getArguments().getString("BABYSITTER_ID", "");
+        this.adminId = getArguments().getString("ADMIN_ID", "");
         databaseReference = FirebaseDatabase.getInstance().getReference("babysitters").child(babysitterId);
         closeImageView = view.findViewById(R.id.admin_popup_close_btn);
 
@@ -145,6 +148,8 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
                     // Check if fragment is still attached to the activity
                     if (isAdded()) {
                         if (task.isSuccessful()) {
+                            updateAdminLists(babysitterId, isVerified);
+
                             Toast.makeText(getContext(), "Status updated successfully", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(), "Failed to update status", Toast.LENGTH_SHORT).show();
@@ -153,7 +158,7 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
                 });
         dismiss();
     }
-    private void updateAdminLists(boolean isVerified) {
+    private void updateAdminLists(String babysitterId, boolean isVerified) {
         DatabaseReference adminRef = FirebaseDatabase.getInstance().getReference("admins").child("YOUR_ADMIN_ID"); // Replace with actual admin ID
 
         // Fetch current admin
@@ -176,10 +181,9 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), "Failed to update admin lists", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
     private void handleBlacklist(boolean addToBlacklist) {
-        DatabaseReference adminRef = FirebaseDatabase.getInstance().getReference("admins").child("YOUR_ADMIN_ID"); // Replace with actual admin ID
+        DatabaseReference adminRef = FirebaseDatabase.getInstance().getReference("users").child(adminId);
 
         adminRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -193,7 +197,7 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
                         admin.getBlacklistedBabysitters().remove(babysitterId);
                         admin.getVerifiedBabysitters().add(babysitterId);
                     }
-                    adminRef.setValue(admin); // Update admin in database
+                    adminRef.setValue(admin);
                 }
             }
 

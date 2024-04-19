@@ -51,7 +51,7 @@ public class FragmentAdmin extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String adminId = currentUser != null ? currentUser.getUid() : "2FFOGYy2ce8aPmcltnSPAavVcFipq2";
+        String adminId = "FOGYy2ce8aPmcltnSPAavVcFipq2";
 
         babysittersList = new ArrayList<>();
         babysitterIds = new ArrayList<>();
