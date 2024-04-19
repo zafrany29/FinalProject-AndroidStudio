@@ -114,14 +114,14 @@ public class BabysitterDetailDialogFragment extends DialogFragment {
                     descriptionTextView.setText(currentBabysitter.getDescription());
 
                     List<String> details = new ArrayList<>();
-                    details.add("Full Name:" + currentBabysitter.getFullName());
-                    details.add("Email:" + currentBabysitter.getEmail());
-                    details.add("Age: " + currentBabysitter.getAge());
-                    details.add("Experience: " + currentBabysitter.getExperience());
-                    details.add("Kids Age Range: " + currentBabysitter.getKidsAgeRange());
-                    details.add("Location: " + currentBabysitter.getLocation());
-                    details.add("Salary: ₪" + currentBabysitter.getSalary());
-                    details.add("Social Link: " + currentBabysitter.getSocialLink());
+                    details.add("שם מלא:" + currentBabysitter.getFullName());
+                    details.add("מייל:" + currentBabysitter.getEmail());
+                    details.add("גיל: " + currentBabysitter.getAge());
+                    details.add("ניסיון: " + currentBabysitter.getExperience());
+                    details.add("טווח גיל: " + currentBabysitter.getKidsAgeRange());
+                    details.add("מיקום: " + currentBabysitter.getLocation());
+                    details.add("שכר: ₪" + currentBabysitter.getSalary());
+                    details.add("לינק ציבורי: " + currentBabysitter.getSocialLink());
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, details);
                     detailsGridView.setAdapter(adapter);

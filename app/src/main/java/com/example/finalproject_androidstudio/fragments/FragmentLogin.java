@@ -42,7 +42,6 @@ public class FragmentLogin extends Fragment {
         mAuth.signOut(); // Ensure to sign out potentially cached users on app start
 
         if (mAuth.getCurrentUser() != null) {
-            // User is signed in, check user type and navigate
             checkUserTypeAndNavigate();
         }
     }

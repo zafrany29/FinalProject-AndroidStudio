@@ -83,12 +83,6 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         holder.ratingBar.setRating((float) babysitter.getRating());
         Picasso.get().load(babysitter.getProfilePhotoUrl()).into(holder.photoImageView);
 
-//        if(babysitter.getRatingCount() == 0 && babysitter.getRating() == 0){
-//            holder.ratingBar.setVisibility(View.GONE);
-//        } else {
-//            holder.ratingBar.setVisibility(View.VISIBLE);
-//        }
-
         holder.itemView.setOnClickListener(v -> {
             showDialog(babysitter, v.getContext()); // Show dialog on item click
         });
