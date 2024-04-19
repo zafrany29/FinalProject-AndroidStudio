@@ -63,7 +63,6 @@ public class FragmentRegister extends Fragment {
 
     private View rootView;
     private Button registerBtn;
-    private Button returnBtn;
     private Button regUploadPhotoBtn;
     private Button regUploadIDPhotoBtn;
     private ImageView regBbsPhoto;
@@ -163,7 +162,6 @@ public class FragmentRegister extends Fragment {
 
     private void initViews() {
         registerBtn = rootView.findViewById(R.id.register_btnn);
-        returnBtn = rootView.findViewById(R.id.return_btn);
         regTextFullName = rootView.findViewById(R.id.regEditTextFullName);
         regTextEmailAddress = rootView.findViewById(R.id.regEditTextEmailAddress);
         regTextSelectedDate = rootView.findViewById(R.id.regEditTextSelectedDate);
@@ -337,24 +335,27 @@ public class FragmentRegister extends Fragment {
             Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_LONG).show();
             return null;
         }
-        if(salary == null || salary.isEmpty())
+        if(isBabysitter)
         {
-            try {
-                double parsedSalary = Double.parseDouble(salary);
-                // If parsing successful, do something
-            } catch (NumberFormatException e) {
-                Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_LONG).show();
+            if(salary == null || salary.isEmpty())
+            {
+                try {
+                    double parsedSalary = Double.parseDouble(salary);
+                    // If parsing successful, do something
+                } catch (NumberFormatException e) {
+                    Toast.makeText(getContext(), "Invalid input", Toast.LENGTH_LONG).show();
+                }
+                Toast.makeText(getContext(), "Please enter Salary", Toast.LENGTH_LONG).show();
+                return null;
             }
-            Toast.makeText(getContext(), "Please enter Salary", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        if(profilePhotoUrl == null || profilePhotoUrl.toString().isEmpty())
-        {
-            Toast.makeText(getContext(), "Please Select Profile Photo", Toast.LENGTH_LONG).show();
-        }
-        if(idPhoto == null || idPhoto.toString().isEmpty())
-        {
-            Toast.makeText(getContext(), "Please Select ID Photo", Toast.LENGTH_LONG).show();
+            if(profilePhotoUrl == null || profilePhotoUrl.toString().isEmpty())
+            {
+                Toast.makeText(getContext(), "Please Select Profile Photo", Toast.LENGTH_LONG).show();
+            }
+            if(idPhoto == null || idPhoto.toString().isEmpty())
+            {
+                Toast.makeText(getContext(), "Please Select ID Photo", Toast.LENGTH_LONG).show();
+            }
         }
 
         if (isBabysitter) {

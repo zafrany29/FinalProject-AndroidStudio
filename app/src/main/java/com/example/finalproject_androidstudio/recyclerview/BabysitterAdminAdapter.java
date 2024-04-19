@@ -25,11 +25,13 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
     private List<Babysitter> babysitterList;
     private List<String> babysitterIds; // This list will store the Firebase UIDs
     private Context context;
+    private String adminId;
 
-    public BabysitterAdminAdapter(Context context, List<Babysitter> babysitterList, List<String> babysitterIds) {
+    public BabysitterAdminAdapter(Context context, List<Babysitter> babysitterList, List<String> babysitterIds, String adminId) {
         this.context = context;
         this.babysitterList = babysitterList;
         this.babysitterIds = babysitterIds;
+        this.adminId = adminId;
     }
 
     @NonNull
@@ -42,14 +44,16 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
     @Override
     public void onBindViewHolder(@NonNull BabysitterViewHolder holder, int position) {
         Babysitter babysitter = babysitterList.get(position);
-        String babysitterId = babysitterIds.get(position); // Get the UID from the list
+        String babysitterId = babysitterIds.get(position);
         holder.itemView.setOnClickListener(v -> {
-            BabysitterDetailDialogFragment dialogFragment = BabysitterDetailDialogFragment.newInstance(babysitterId);
+            BabysitterDetailDialogFragment dialogFragment = BabysitterDetailDialogFragment.newInstance(babysitterId, adminId);
             dialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(), "detail");
         });
 
         holder.bind(babysitter);
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -69,7 +73,7 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
 
 
     public static class BabysitterViewHolder extends RecyclerView.ViewHolder {
-        private ImageView babysitterImageView;
+        private ImageView babysitterImageView, adminPopupCloseBtn;
         private TextView nameTextView;
         private TextView emailTextView;
         private CheckBox approvedCheckBox;
@@ -80,6 +84,7 @@ public class BabysitterAdminAdapter extends RecyclerView.Adapter<BabysitterAdmin
             nameTextView = itemView.findViewById(R.id.babbysitter_name);
             emailTextView = itemView.findViewById(R.id.babbysitter_email);
             approvedCheckBox = itemView.findViewById(R.id.approved_cb);
+            adminPopupCloseBtn = itemView.findViewById(R.id.admin_popup_close_btn);
         }
 
         public void bind(Babysitter babysitter) {

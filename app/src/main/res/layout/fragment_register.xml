@@ -3,26 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".fragments.FragmentRegister">
 
     <LinearLayout
         android:id="@+id/titleReg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/return_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="0.8"
-            android:backgroundTint="#0394F4"
-            android:text="Back" />
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/PageTwoTitle"
@@ -33,15 +21,16 @@
             android:gravity="center"
             android:text="הרשמה"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
     <ScrollView
         android:id="@+id/usrLayoutScrollView"
         android:layout_width="match_parent"
-        android:layout_height="588dp"
-        android:layout_below="@id/titleReg">
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleReg"
+        android:layout_above="@id/register_btnn">
 
         <include
             android:id="@+id/userSettingsLayout"
@@ -55,12 +44,11 @@
         android:id="@+id/register_btnn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usrLayoutScrollView"
-        android:layout_marginLeft="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="70dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="#0394F4"
-        android:gravity="center"
         android:text="Register" />
 </RelativeLayout>
