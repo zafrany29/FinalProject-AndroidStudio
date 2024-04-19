@@ -22,7 +22,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -162,44 +164,46 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
     }
 
     private void updateBabysitterRating(Babysitter babysitter, float newRating, Context context, AlertDialog dialog) {
-        String emailKey = sanitizeEmail(babysitter.getEmail());
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(emailKey);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
 
-        ref.runTransaction(new Transaction.Handler() {
+        // Query users by email
+        Query query = ref.orderByChild("email").equalTo(babysitter.getEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-//                Babysitter b = mutableData.getValue(Babysitter.class);
-                if (babysitter == null) {
-                    return Transaction.abort();
-                }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Update each found babysitter
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Babysitter foundBabysitter = snapshot.getValue(Babysitter.class);
+                        if (foundBabysitter != null) {
+                            int newReviewCount = foundBabysitter.getRatingCount() + 1;
+                            double oldRatingsTotal = foundBabysitter.getRating() * foundBabysitter.getRatingCount();
+                            double newAverageRating = (oldRatingsTotal + newRating) / newReviewCount;
 
-                // Update logic...
-                int newReviewCount = babysitter.getRatingCount() + 1;
-                double oldRatingsTotal = babysitter.getRating() * babysitter.getRatingCount();
-                double newAverageRating = (oldRatingsTotal + newRating) / newReviewCount;
-                babysitter.setRating(newAverageRating);
-                babysitter.setRatingCount(newReviewCount);
-                mutableData.setValue(babysitter);
-                return Transaction.success(mutableData);
+                            foundBabysitter.setRating(newAverageRating);
+                            foundBabysitter.setRatingCount(newReviewCount);
+
+                            // Update the database with the new rating
+                            snapshot.getRef().setValue(foundBabysitter)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(context, "Rating updated successfully!", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to update rating.", Toast.LENGTH_SHORT).show());
+                        }
+                    }
+                } else {
+                    Toast.makeText(context, "No matching babysitter found.", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                dialog.dismiss();  // Dismiss dialog regardless of the outcome
-                if (committed) {
-                    Toast.makeText(context, "Rating updated!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "Failed to update rating.", Toast.LENGTH_SHORT).show();
-                }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(context, "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private String sanitizeEmail(String email) {
-        if (email != null) {
-            return email.replace(".", ",");
-        }
-        return email;
-    }
+
 
 }
