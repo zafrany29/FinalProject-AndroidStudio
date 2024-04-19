@@ -39,7 +39,7 @@ public class FragmentLogin extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-//        mAuth.signOut(); // Ensure to sign out potentially cached users on app start
+        mAuth.signOut(); // Ensure to sign out potentially cached users on app start
 
         if (mAuth.getCurrentUser() != null) {
             // User is signed in, check user type and navigate

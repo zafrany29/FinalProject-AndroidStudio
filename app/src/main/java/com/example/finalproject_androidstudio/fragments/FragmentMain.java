@@ -1,6 +1,7 @@
 package com.example.finalproject_androidstudio.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +101,6 @@ public class FragmentMain extends Fragment {
         retrieveDataFromFirebase("");
         // Initialize greeting text view
         greetingText = view.findViewById(R.id.greeting_text);
-
 
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -257,4 +257,10 @@ public class FragmentMain extends Fragment {
         });
     }
 
+    private String sanitizeEmail(String email) {
+        if (email != null) {
+            return email.replace(".", ",");
+        }
+        return null;
+    }
 }
