@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
-import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -47,7 +44,7 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
     // ViewHolder class to hold references to views within each row
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView fullNameTextView;
-        TextView kidsAgeRangeAndAgeTextView;
+        TextView ageDetailsTextView, experienceDetailsTextView, rangeDetailsTextView, salaryDetailsTextView;
         RatingBar ratingBar;
         ImageView photoImageView;
 
@@ -56,7 +53,10 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             fullNameTextView = itemView.findViewById(R.id.fullNameTextView);
-            kidsAgeRangeAndAgeTextView = itemView.findViewById(R.id.detailsTextView);
+            ageDetailsTextView = itemView.findViewById(R.id.ageDetailsTextView);
+            experienceDetailsTextView = itemView.findViewById(R.id.experienceDetailsTextView);
+            rangeDetailsTextView = itemView.findViewById(R.id.rangeDetailsTextView);
+            salaryDetailsTextView = itemView.findViewById(R.id.salaryDetailsTextView);
             ratingBar = itemView.findViewById(R.id.ratingBar);
             photoImageView = itemView.findViewById(R.id.photoImageView);
 
@@ -74,7 +74,10 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Babysitter babysitter = babysitterList.get(position);
         holder.fullNameTextView.setText(babysitter.getFullName());
-        holder.kidsAgeRangeAndAgeTextView.setText( "ילדים בגיל: "+ babysitter.getKidsAgeRange()+", "+babysitter.getLocation());
+        holder.ageDetailsTextView.setText("גיל: " + String.valueOf(babysitter.getAge()));
+        holder.experienceDetailsTextView.setText("שנות ניסיון: " + String.valueOf(babysitter.getExperience()));
+        holder.rangeDetailsTextView.setText("טווח גילאים: " + String.valueOf(babysitter.getKidsAgeRange()));
+        holder.salaryDetailsTextView.setText("מחיר שעתי מצופה: " + String.valueOf(babysitter.getSalary()) + " ש\"ח");
         holder.ratingBar.setRating((float) babysitter.getRating());
         Picasso.get().load(babysitter.getProfilePhotoUrl()).into(holder.photoImageView);
 
@@ -124,6 +127,8 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
 
         TextView textViewFullName = dialogView.findViewById(R.id.textViewFullName);
         TextView textViewDetails = dialogView.findViewById(R.id.textViewDetails);
+        TextView phoneTextView = dialogView.findViewById(R.id.phoneTextView);
+        TextView emailTextView = dialogView.findViewById(R.id.emailTextView);
         ImageView imageView = dialogView.findViewById(R.id.imageViewDialog);
         RatingBar ratingBar = dialogView.findViewById(R.id.ratingBarDialog);
         Button rateButton = dialogView.findViewById(R.id.buttonRate);
@@ -132,9 +137,10 @@ public class BabysitterAdapter extends RecyclerView.Adapter<BabysitterAdapter.Vi
         Button closeButton = dialogView.findViewById(R.id.buttonClose);
 
         textViewFullName.setText(babysitter.getFullName());
-        textViewDetails.setText("Age: " + babysitter.getAge() + ", Location: " + babysitter.getLocation());
-        scroll.setText("about me " + babysitter.getDescription()+ "\n" + "Years of Eperiance: "+babysitter.getExperience()+"\n" +
-                "Salary expectation: " +babysitter.getSalary()+"NIS/h" + "\n"+"Phone for Contact: "+ babysitter.getPhoneNumber() + "\n" + "Kids Prefered Age Range: " + babysitter.getKidsAgeRange() );
+        textViewDetails.setText("גיל: " + babysitter.getAge() + ", מחוז: " + babysitter.getLocation());
+        phoneTextView.append(babysitter.getPhoneNumber());
+        emailTextView.append(babysitter.getEmail());
+        scroll.setText(babysitter.getDescription());
         scrollView.scrollTo(0, 0);
 
 
