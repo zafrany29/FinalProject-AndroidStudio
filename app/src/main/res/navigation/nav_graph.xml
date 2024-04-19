@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/fragmentLogin">
+
     <fragment
         android:id="@+id/fragmentLogin"
         android:name="com.example.finalproject_androidstudio.fragments.FragmentLogin"
@@ -10,14 +11,21 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_fragmentLogin_to_fragmentRegister"
-            app:destination="@id/fragmentRegister" />
+            app:destination="@id/fragmentRegister"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/fragmentLogin" />
         <action
             android:id="@+id/action_fragmentLogin_to_fragmentMain"
-            app:destination="@id/fragmentMain" />
+            app:destination="@id/fragmentMain"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/fragmentLogin" />
         <action
             android:id="@+id/action_fragmentLogin_to_fragmentAdmin"
-            app:destination="@id/fragmentAdmin2" />
+            app:destination="@id/fragmentAdmin"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/fragmentLogin" />
     </fragment>
+
     <fragment
         android:id="@+id/fragmentRegister"
         android:name="com.example.finalproject_androidstudio.fragments.FragmentRegister"
@@ -25,7 +33,9 @@
         tools:layout="@layout/fragment_register" >
         <action
             android:id="@+id/action_fragmentRegister_to_fragmentMain"
-            app:destination="@id/fragmentMain" />
+            app:destination="@id/fragmentMain"
+            app:popUpTo="@id/fragmentRegister"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/fragmentMain"
@@ -34,7 +44,9 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_fragmentMain_to_fragmentLogin"
-            app:destination="@id/fragmentLogin" />
+            app:destination="@id/fragmentLogin"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_fragmentMain_to_fragmentProfile"
             app:destination="@id/fragmentProfile" />
@@ -49,8 +61,14 @@
             app:destination="@id/fragmentMain" />
     </fragment>
     <fragment
-        android:id="@+id/fragmentAdmin2"
+        android:id="@+id/fragmentAdmin"
         android:name="com.example.finalproject_androidstudio.fragments.FragmentAdmin"
         android:label="fragment_admin"
-        tools:layout="@layout/fragment_admin" />
+        tools:layout="@layout/fragment_admin" >
+        <action
+            android:id="@+id/action_fragmentAdmin_to_fragmentLogin"
+            app:destination="@id/fragmentLogin"
+            app:popUpTo="@id/fragmentAdmin"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

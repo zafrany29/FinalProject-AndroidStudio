@@ -5,15 +5,21 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+
 import com.example.finalproject_androidstudio.R;
 import com.example.finalproject_androidstudio.activities.Babysitter;
 import com.example.finalproject_androidstudio.recyclerview.BabysitterAdminAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,67 +31,60 @@ import java.util.List;
 
 public class FragmentAdmin extends Fragment {
 
-    RecyclerView adminRecycler;
+    private RecyclerView adminRecycler;
+    private Button logout_btn;
     private BabysitterAdminAdapter adapter;
     private List<Babysitter> babysittersList;
-    private List<String> babysitterIds;  // To store the Firebase UIDs
-
+    private List<String> babysitterIds;
     private Handler handler;
-    private static final long UPDATE_INTERVAL = 60000 * 10; // 10 minute in milliseconds
-
+    private static final long UPDATE_INTERVAL = 60000 * 10;
     private SwipeRefreshLayout swipeRefreshLayout;
-    androidx.appcompat.widget.SearchView searchView;
+    private LinearLayoutManager linearLayoutManager;
+    private ProgressBar progressBar;
+    private FirebaseAuth mAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin, container, false);
         adminRecycler = view.findViewById(R.id.admin_page_recyclerview);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        adminRecycler.setLayoutManager(linearLayoutManager);
+        progressBar = view.findViewById(R.id.admin_page_progressbar);
+        logout_btn = view.findViewById(R.id.admin_page_logout);
+        mAuth = FirebaseAuth.getInstance();
 
-        adminRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String adminId = "FOGYy2ce8aPmcltnSPAavVcFipq2";
 
-        // Initialize the lists
         babysittersList = new ArrayList<>();
         babysitterIds = new ArrayList<>();
-
-        adapter = new BabysitterAdminAdapter(getContext(), babysittersList, babysitterIds);
+        adapter = new BabysitterAdminAdapter(getContext(), babysittersList, babysitterIds, adminId);
         adminRecycler.setAdapter(adapter);
 
-        // Initialize the handler
         handler = new Handler(Looper.getMainLooper());
-
-        searchView = view.findViewById(R.id.admin_search_view);
-
-
-
-        // Retrieve and display babysitters initially
+        setListeners();
         retrieveBabysitters();
-
-        // Start periodic updates
         startPeriodicUpdates();
 
         return view;
     }
 
-    private void setListeners(){
-        // Setup the SwipeRefreshLayout
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    private void setListeners() {
+        swipeRefreshLayout.setOnRefreshListener(this::retrieveBabysitters);
+        adminRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onRefresh() {
-                retrieveBabysitters(); // Refresh the list when swiped
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                swipeRefreshLayout.setEnabled(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0); // Enable refresh only when the first item is completely visible (i.e., at the top)
             }
         });
 
-        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+        logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;  // No action on submit
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText, babysittersList);  // Filter as the user types
-                return true;
+            public void onClick(View v) {
+                // Sign out the current user
+                mAuth.signOut();
+                Navigation.findNavController(v).navigate(R.id.action_fragmentAdmin_to_fragmentLogin);
             }
         });
     }
@@ -94,36 +93,38 @@ public class FragmentAdmin extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                retrieveBabysitters(); // Retrieve and display babysitters periodically
-                handler.postDelayed(this, UPDATE_INTERVAL); // Schedule the next update
+                retrieveBabysitters();
+                handler.postDelayed(this, UPDATE_INTERVAL);
             }
         }, UPDATE_INTERVAL);
     }
 
     private void retrieveBabysitters() {
+        progressBar.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         Query query = databaseReference.orderByChild("whoAmI").equalTo("BABYSITTER");
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                babysittersList.clear();  // Clear the current list
-                babysitterIds.clear();  // Clear the UID list
+                babysittersList.clear();
+                babysitterIds.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Babysitter babysitter = snapshot.getValue(Babysitter.class);
                     if (babysitter != null && !babysitter.isVerified()) {
                         babysittersList.add(babysitter);
-                        babysitterIds.add(snapshot.getKey());  // Store the Firebase UID
+                        babysitterIds.add(snapshot.getKey());
                     }
                 }
-                adapter.notifyDataSetChanged();  // Notify the adapter to refresh the data
-                swipeRefreshLayout.setRefreshing(false); // Stop the refreshing animation
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle possible errors
-                swipeRefreshLayout.setRefreshing(false); // Stop the refreshing animation
+                swipeRefreshLayout.setRefreshing(false);
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -131,7 +132,6 @@ public class FragmentAdmin extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Remove any pending callbacks to prevent memory leaks
         handler.removeCallbacksAndMessages(null);
     }
 }

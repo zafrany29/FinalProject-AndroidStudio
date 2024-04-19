@@ -13,14 +13,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string-array name="gender_array">
-        <item>בחר מגדר</item>
         <item>נקבה</item>
         <item>זכר</item>
         <item>אחר</item>
     </string-array>
 
     <string-array name="location_array">
-        <item>בחר מחוז</item>
         <item>מחוז צפון</item>
         <item>מחוז חיפה</item>
         <item>מחוז תל אביב</item>

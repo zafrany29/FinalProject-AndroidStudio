@@ -2,63 +2,64 @@ package com.example.finalproject_androidstudio.activities;
 
 import com.google.firebase.firestore.PropertyName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Admin {
-    @PropertyName("verified_babysitters")
-    private List<Babysitter> verifiedBabysitters;
+    @PropertyName("verifiedBabysitters")
+    private List<String> verifiedBabysitters;
 
-    @PropertyName("full_name")
-    private String fullName;
+    @PropertyName("blacklistedBabysitters")
+    private List<String> blacklistedBabysitters;
 
-    @PropertyName("email_address")
+    @PropertyName("emailAddress")
     private String email;
 
-    @PropertyName("who_am_i")
+    @PropertyName("whoAmI")
     private String whoAmI;
     
     public Admin() {
 
     }
 
-    public Admin(String fullName, String email) {
-        this.fullName = fullName;
+    public Admin(String email) {
         this.email = email;
         this.whoAmI = "ADMIN";
+        this.verifiedBabysitters = new ArrayList<>();
+        this.blacklistedBabysitters = new ArrayList<>();
     }
 
-    @PropertyName("verified_babysitters")
-    public List<Babysitter> getVerifiedBabysitters() {
+    // Getters
+    public List<String> getVerifiedBabysitters() {
         return verifiedBabysitters;
     }
 
-    @PropertyName("verified_babysitters")
-    public void setVerifiedBabysitters(List<Babysitter> verifiedBabysitters) {
-        this.verifiedBabysitters = verifiedBabysitters;
+    public List<String> getBlacklistedBabysitters() {
+        return blacklistedBabysitters;
     }
 
-    @PropertyName("full_name")
-    public String getFullName() {
-        return fullName;
-    }
-
-    @PropertyName("full_name")
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    @PropertyName("email_address")
     public String getEmail() {
         return email;
     }
 
-    @PropertyName("email_address")
+    public String getWhoAmI() {
+        return whoAmI;
+    }
+
+    // Setters
+    public void setVerifiedBabysitters(List<String> verifiedBabysitters) {
+        this.verifiedBabysitters = verifiedBabysitters;
+    }
+
+    public void setBlacklistedBabysitters(List<String> blacklistedBabysitters) {
+        this.blacklistedBabysitters = blacklistedBabysitters;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
-    @PropertyName("who_am_i")
-    public String getWhoAmI() {
-        return whoAmI;
+    public void setWhoAmI(String whoAmI) {
+        this.whoAmI = whoAmI;
     }
 }

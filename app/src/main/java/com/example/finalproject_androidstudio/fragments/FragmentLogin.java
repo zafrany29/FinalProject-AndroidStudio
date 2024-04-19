@@ -32,7 +32,7 @@ public class FragmentLogin extends Fragment {
     private FirebaseAuth mAuth;
 
     public FragmentLogin() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -86,7 +86,6 @@ public class FragmentLogin extends Fragment {
         if (currentUser != null) {
             DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
             DatabaseReference currentUserRef = usersRef.child(currentUser.getUid());
-
             currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,7 +98,6 @@ public class FragmentLogin extends Fragment {
                         }
                     } else {
                         Toast.makeText(getActivity(), "Failed to read user data. DataSnapshot does not exist.", Toast.LENGTH_LONG).show();
-//                        Log.d("FirebaseData", "DataSnapshot: " + dataSnapshot.getKey() + " does not exist.");
                     }
                 }
 
