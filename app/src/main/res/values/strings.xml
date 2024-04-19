@@ -43,15 +43,4 @@
         <item>13+ שנים</item>
     </string-array>
 
-    <string-array name="user_type_array">
-        <item>בחר סוג משתמש</item>
-        <item>לקוח</item>
-        <item>נותן שירות</item>
-    </string-array>
-
-    <string-array name="profession_array">
-        <item>בחר מקצוע</item>
-        <item>בייביסיטר</item>
-    </string-array>
-
 </resources>

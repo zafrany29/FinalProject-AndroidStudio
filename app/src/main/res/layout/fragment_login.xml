@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:gravity="center"
-        android:text="Login"
+        android:text="התחבר"
         android:textSize="22sp"
         android:textStyle="bold" />
 
@@ -37,9 +37,9 @@
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:lines="1"
+            android:hint="מייל"
             android:inputType="textEmailAddress"
-            android:hint="Email"/>
+            android:lines="1" />
 
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -62,10 +62,10 @@
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:lines="1"
-            android:maxLength="16"
+            android:hint="סיסמה"
             android:inputType="textPassword"
-            android:hint="Password"/>
+            android:lines="1"
+            android:maxLength="16" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,16 +73,16 @@
         android:id="@+id/loginBbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:backgroundTint="#0394F4"
-        android:text="Login"
-        android:layout_marginTop="30dp"/>
+        android:text="התחבר" />
 
     <Button
         android:id="@+id/regButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#0394F4"
-        android:text="Register" />
+        android:text="הירשם" />
 
 
 </LinearLayout>

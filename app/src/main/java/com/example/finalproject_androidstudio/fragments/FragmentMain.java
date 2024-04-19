@@ -188,7 +188,7 @@ public class FragmentMain extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Babysitter babysitter = snapshot.getValue(Babysitter.class);
                     if (babysitter != null && babysitter.getWhoAmI() == MyUser.WhoAmI.BABYSITTER && babysitter.isVerified()) {
-                        if (locationFilter.isEmpty() || locationFilter.equals("All Locations") || babysitter.getLocation().equalsIgnoreCase(locationFilter)) {
+                        if (locationFilter.isEmpty() || locationFilter.equals("כל המיקומים") || babysitter.getLocation().equalsIgnoreCase(locationFilter)) {
                             babysitterMap.put(babysitter.getEmail(), babysitter); // Use ID as key
                         }
                     }
@@ -207,7 +207,7 @@ public class FragmentMain extends Fragment {
     }
     private void setupSpinner() {
         locationList = new ArrayList<>();
-        locationList.add("All Locations"); // Default option
+        locationList.add("כל המיקומים"); // Default option
         locationList.add("מחוז צפון");
         locationList.add("מחוז חיפה");
         locationList.add("מחוז תל אביב");

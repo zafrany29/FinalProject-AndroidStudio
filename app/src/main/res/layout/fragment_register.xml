@@ -22,7 +22,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="0.8"
             android:backgroundTint="#0394F4"
-            android:text="Back" />
+            android:text="חזור" />
 
         <TextView
             android:id="@+id/PageTwoTitle"
@@ -62,5 +62,5 @@
         android:layout_marginBottom="20dp"
         android:backgroundTint="#0394F4"
         android:gravity="center"
-        android:text="Register" />
+        android:text="הירשם" />
 </RelativeLayout>

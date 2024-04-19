@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:text="עדכון פרטים אישיים"
+            android:text="עדכון פרטי חשבון"
             android:textSize="22sp"
             android:textStyle="bold" />
 
