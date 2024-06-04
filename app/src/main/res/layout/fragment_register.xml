@@ -3,32 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragments.FragmentProfile">
+    tools:context=".fragments.FragmentRegister">
 
     <LinearLayout
         android:id="@+id/titleReg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/PageTwoTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:layout_weight="0.3"
             android:gravity="center"
-            android:text="עדכון פרטי חשבון"
+            android:text="הרשמה"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
     <ScrollView
         android:id="@+id/usrLayoutScrollView"
         android:layout_width="match_parent"
-        android:layout_height="619dp"
-        android:layout_below="@id/titleReg">
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleReg"
+        android:layout_above="@id/register_btnn">
 
         <include
             android:id="@+id/userSettingsLayout"
@@ -38,27 +40,15 @@
 
     </ScrollView>
 
-    <LinearLayout
+    <Button
+        android:id="@+id/register_btnn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usrLayoutScrollView"
-        android:gravity="right"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="#0394F4"
-            android:text="ביטול" />
-
-        <Button
-            android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="#0394F4"
-            android:text="עדכן" />
-    </LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="#0394F4"
+        android:text="Register" />
 </RelativeLayout>

@@ -1,126 +1,162 @@
 package com.example.finalproject_androidstudio.activities;
 
-import android.widget.ImageView;
+import com.google.firebase.firestore.PropertyName;
 
-public class Babysitter extends User{
-//    public ImageView profileImage;
-//    public ImageView idImage;
-    public String facebookURL;
-    public String profileImageRef; // Reference to profile image
-    public String idImageRef; // Reference to ID image
-    public String years; // Optional
-    public String speciality; // Optional
-    public String kidsAgeRange; // Optional
-    public float salary; // Optional, use Float to allow null
-    public float rate = -1;
-    public boolean isVerified = false;
+import java.util.List;
+
+public class Babysitter extends MyUser {
+    @PropertyName("id_photo_url")
+    private String idPhotoUrl;
+    @PropertyName("profile_photo_url")
+    private String profilePhotoUrl;
+    @PropertyName("social_link")
+    private String socialLink;
+    @PropertyName("experience")
+    private String experience;
+    @PropertyName("speciality")
+    private String speciality;
+    @PropertyName("kids_age_range")
+    private String kidsAgeRange;
+    @PropertyName("salary")
+    private double salary;
+    @PropertyName("rating")
+    private double rating;
+    @PropertyName("ratingCount")
+    private int ratingCount;
+    @PropertyName("isVerified")
+    private boolean isVerified;
+    @PropertyName("description")
+    private String description;
 
     public Babysitter() {
+        // Default constructor required for Firestore
     }
 
-    public Babysitter(String fname, String lname, String gender, String location, String birthDate,
-                      String email, String password, String phone, String text, String facebookURL,
-                      String profileImageRef, String idImageRef, String years, String speciality,
-                      String kidsAgeRange, Float salary) {
-        super(fname, lname, gender, location, birthDate, email, password, phone, text);
-        this.permission = Permissions.BABYSITTER; // Set permission to BABYSITTER
-        this.facebookURL = facebookURL;
-        this.profileImageRef = profileImageRef;
-        this.idImageRef = idImageRef;
-        this.years = years; // Optional
-        this.speciality = speciality; // Optional
-        this.kidsAgeRange = kidsAgeRange; // Optional
-        this.salary = salary != null ? salary : 0; // Optional
-        this.rate = -1;
-        this.isVerified = false; // Default to false
+    public Babysitter(String fullName, String email, String phoneNumber, String location, String description, List<String> calendar,
+                      String idPhotoUrl, String profilePhotoUrl, String socialLink, String experience,
+                      String speciality, String kidsAgeRange, double salary, double rating, boolean isVerified) {
+        // Set whoAmI to BABYSITTER since it's specific to this class
+        super(fullName, email, phoneNumber, location, calendar, WhoAmI.BABYSITTER);
+        // Initialize other fields specific to Babysitter
+        this.idPhotoUrl = idPhotoUrl;
+        this.profilePhotoUrl = profilePhotoUrl;
+        this.socialLink = socialLink;
+        this.experience = experience;
+        this.speciality = speciality;
+        this.kidsAgeRange = kidsAgeRange;
+        this.salary = salary;
+        this.rating = rating;
+        this.isVerified = isVerified;
+        this.description = description;
     }
 
-    // Constructor without optional fields (except rate, which is explicitly set)
-    public Babysitter(String fname, String lname, String gender, String location, String birthDate,
-                      String email, String password, String phone, String facebookURL,
-                      String profileImageRef, String idImageRef) {
-        this(fname, lname, gender, location, birthDate, email, password, phone, "", facebookURL,
-                profileImageRef, idImageRef, null, null, null, null);
+    @PropertyName("id_photo_url")
+    public String getIdPhotoUrl() {
+        return idPhotoUrl;
     }
 
-    public String getFacebookURL() {
-        return facebookURL;
+    @PropertyName("id_photo_url")
+    public void setIdPhotoUrl(String idPhotoUrl) {
+        this.idPhotoUrl = idPhotoUrl;
     }
 
-    public void setFacebookURL(String facebookURL) {
-        if (facebookURL == null || facebookURL.trim().isEmpty()) {
-            throw new IllegalArgumentException("Facebook URL is mandatory");
-        }
-        this.facebookURL = facebookURL;
+    @PropertyName("profile_photo_url")
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
     }
 
-    public String getProfileImageRef() {
-        return profileImageRef;
+    @PropertyName("profile_photo_url")
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
     }
 
-    public void setProfileImageRef(String profileImageRef) {
-        if (profileImageRef == null || profileImageRef.trim().isEmpty()) {
-            throw new IllegalArgumentException("Profile image reference is mandatory");
-        }
-        this.profileImageRef = profileImageRef;
+    @PropertyName("social_link")
+    public String getSocialLink() {
+        return socialLink;
     }
 
-    public String getIdImageRef() {
-        return idImageRef;
+    @PropertyName("social_link")
+    public void setSocialLink(String socialLink) {
+        this.socialLink = socialLink;
     }
 
-    public void setIdImageRef(String idImageRef) {
-        if (idImageRef == null || idImageRef.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID image reference is mandatory");
-        }
-        this.idImageRef = idImageRef;
+    @PropertyName("experience")
+    public String getExperience() {
+        return experience;
     }
 
-    public String getYears() {
-        return years;
+    @PropertyName("experience")
+    public void setExperience(String experience) {
+        this.experience = experience;
     }
 
-    public void setYears(String years) {
-        this.years = years;
-    }
-
+    @PropertyName("speciality")
     public String getSpeciality() {
         return speciality;
     }
 
+    @PropertyName("speciality")
     public void setSpeciality(String speciality) {
         this.speciality = speciality;
     }
 
+    @PropertyName("kids_age_range")
     public String getKidsAgeRange() {
         return kidsAgeRange;
     }
 
+    @PropertyName("kids_age_range")
     public void setKidsAgeRange(String kidsAgeRange) {
         this.kidsAgeRange = kidsAgeRange;
     }
 
-    public float getSalary() {
+    @PropertyName("salary")
+    public double getSalary() {
         return salary;
     }
 
-    public void setSalary(float salary) {
+    @PropertyName("salary")
+    public void setSalary(double salary) {
         this.salary = salary;
     }
 
-    public float getRate() {
-        return rate;
+    @PropertyName("rating")
+    public double getRating() {
+        return rating;
     }
 
-    public void setRate(float rate) {
-        this.rate = rate;
+    @PropertyName("rating")
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
+    @PropertyName("ratingCount")
+    public int getRatingCount() {
+        return ratingCount;
+    }
+
+    @PropertyName("ratingCount")
+    public void setRatingCount(int ratingCount) {
+        this.ratingCount = ratingCount;
+    }
+
+    @PropertyName("isVerified")
     public boolean isVerified() {
         return isVerified;
     }
 
+    @PropertyName("isVerified")
     public void setVerified(boolean verified) {
         isVerified = verified;
+    }
+
+    @PropertyName("description")
+    public String getDescription() {
+        return description;
+    }
+
+    @PropertyName("description")
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

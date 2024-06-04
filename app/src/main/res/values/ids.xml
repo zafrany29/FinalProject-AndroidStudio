@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="reg_progress_bar" type="id" />
+    <item name="scrolling_for_textview" type="id" />
+    <item name="scrolling_textview_description" type="id" />
+    <item name="recycler_view_progress_bar" type="id" />
+    <item name="admin_page_progressbar" type="id" />
+</resources>

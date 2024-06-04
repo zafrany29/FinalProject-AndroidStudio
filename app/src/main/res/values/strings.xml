@@ -13,14 +13,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string-array name="gender_array">
-        <item>בחר מגדר</item>
         <item>נקבה</item>
         <item>זכר</item>
         <item>אחר</item>
     </string-array>
 
     <string-array name="location_array">
-        <item>בחר מחוז</item>
         <item>מחוז צפון</item>
         <item>מחוז חיפה</item>
         <item>מחוז תל אביב</item>
@@ -29,16 +27,18 @@
         <item>מחוז הדרום</item>
     </string-array>
 
-    <string-array name="user_type_array">
-        <item>בחר סוג משתמש</item>
-        <item>לקוח</item>
-        <item>נותן שירות</item>
+    <string-array name="ageRange">
+        <item>פעוט (0-3 שנים)</item>
+        <item>גן ילדים (3-5 שנים)</item>
+        <item>בני נוער (5-12 שנים)</item>
+        <item>נער מתבגר (13+ שנים)</item>
     </string-array>
 
-    <string-array name="profession_array">
-        <item>בחר מקצוע</item>
-        <item>בייביסיטר</item>
-        <item>דוג-ווקר</item>
+    <string-array name="experience">
+        <item>0-3 שנים</item>
+        <item>3-5 שנים</item>
+        <item>5-12 שנים</item>
+        <item>13+ שנים</item>
     </string-array>
 
 </resources>
